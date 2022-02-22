@@ -1,4 +1,4 @@
-import { wrapContract } from '@0xessential/metassential/metassential';
+import { wrapContract } from '@0xessential/metassential';
 import { Contract, ContractInterface } from '@ethersproject/contracts';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Wallet } from 'ethers';
