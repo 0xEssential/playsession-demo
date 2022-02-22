@@ -19,6 +19,16 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export declare namespace IForwardRequest {
+  export type PlaySessionStruct = {
+    authorized: string;
+    expiresAt: BigNumberish;
+  };
+
+  export type PlaySessionStructOutput = [string, BigNumber] & {
+    authorized: string;
+    expiresAt: BigNumber;
+  };
+
   export type ForwardRequestStruct = {
     from: string;
     authorizer: string;
@@ -61,9 +71,11 @@ export interface EssentialForwarderInterface extends utils.Interface {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "createMessage(address,uint256,address,uint256)": FunctionFragment;
     "createSession(address,uint256)": FunctionFragment;
+    "createSignedSession(bytes,address,uint256,address)": FunctionFragment;
     "executeWithProof(bytes,bytes)": FunctionFragment;
     "getNonce(address)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
+    "getSession()": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "invalidateSession()": FunctionFragment;
@@ -93,6 +105,10 @@ export interface EssentialForwarderInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "createSignedSession",
+    values: [BytesLike, string, BigNumberish, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "executeWithProof",
     values: [BytesLike, BytesLike]
   ): string;
@@ -100,6 +116,10 @@ export interface EssentialForwarderInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getRoleAdmin",
     values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSession",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "grantRole",
@@ -153,6 +173,10 @@ export interface EssentialForwarderInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "createSignedSession",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "executeWithProof",
     data: BytesLike
   ): Result;
@@ -161,6 +185,7 @@ export interface EssentialForwarderInterface extends utils.Interface {
     functionFragment: "getRoleAdmin",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getSession", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(
@@ -275,6 +300,14 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    createSignedSession(
+      signature: BytesLike,
+      authorized: string,
+      length: BigNumberish,
+      sender: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     executeWithProof(
       response: BytesLike,
       extraData: BytesLike,
@@ -284,6 +317,10 @@ export interface EssentialForwarder extends BaseContract {
     getNonce(from: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
+
+    getSession(
+      overrides?: CallOverrides
+    ): Promise<[IForwardRequest.PlaySessionStructOutput]>;
 
     grantRole(
       role: BytesLike,
@@ -353,6 +390,14 @@ export interface EssentialForwarder extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  createSignedSession(
+    signature: BytesLike,
+    authorized: string,
+    length: BigNumberish,
+    sender: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   executeWithProof(
     response: BytesLike,
     extraData: BytesLike,
@@ -362,6 +407,10 @@ export interface EssentialForwarder extends BaseContract {
   getNonce(from: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
+
+  getSession(
+    overrides?: CallOverrides
+  ): Promise<IForwardRequest.PlaySessionStructOutput>;
 
   grantRole(
     role: BytesLike,
@@ -431,6 +480,14 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    createSignedSession(
+      signature: BytesLike,
+      authorized: string,
+      length: BigNumberish,
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     executeWithProof(
       response: BytesLike,
       extraData: BytesLike,
@@ -440,6 +497,10 @@ export interface EssentialForwarder extends BaseContract {
     getNonce(from: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
+
+    getSession(
+      overrides?: CallOverrides
+    ): Promise<IForwardRequest.PlaySessionStructOutput>;
 
     grantRole(
       role: BytesLike,
@@ -554,6 +615,14 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    createSignedSession(
+      signature: BytesLike,
+      authorized: string,
+      length: BigNumberish,
+      sender: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     executeWithProof(
       response: BytesLike,
       extraData: BytesLike,
@@ -566,6 +635,8 @@ export interface EssentialForwarder extends BaseContract {
       role: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getSession(overrides?: CallOverrides): Promise<BigNumber>;
 
     grantRole(
       role: BytesLike,
@@ -638,6 +709,14 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    createSignedSession(
+      signature: BytesLike,
+      authorized: string,
+      length: BigNumberish,
+      sender: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     executeWithProof(
       response: BytesLike,
       extraData: BytesLike,
@@ -653,6 +732,8 @@ export interface EssentialForwarder extends BaseContract {
       role: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getSession(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     grantRole(
       role: BytesLike,
