@@ -1,0 +1,38 @@
+{
+  "name": "playsession-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lintfix": "eslint '**/*.{js,jsx,ts,tsx}' --fix"
+  },
+  "dependencies": {
+    "@0xessential/metassential": "file:../metatransactions/dist",
+    "@audius/hedgehog": "^1.0.12",
+    "bnc-notify": "^1.9.4",
+    "bnc-onboard": "^1.38.1",
+    "ethers": "^5.5.4",
+    "firebase": "^8.0.0",
+    "next": "12.1.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.19",
+    "@types/react": "17.0.39",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "8.9.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-cypress": "^2.11.2",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "hardhat": "^2.2.1",
+    "prettier": "^2.2.1",
+    "typescript": "4.5.5"
+  }
+}
