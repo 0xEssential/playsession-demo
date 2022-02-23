@@ -18,8 +18,9 @@ class Firebase {
     };
     if (!firebase.apps.length) {
       this.app = firebase.initializeApp(config);
-      this.db = firebase.firestore();
     }
+
+    this.db = firebase.firestore();
   }
 
   async writeToFirebase(tableName, primaryKey, data) {

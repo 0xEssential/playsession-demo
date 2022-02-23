@@ -8,15 +8,11 @@ export type NFT = {
 };
 
 const openSea = (url: string): NFT | undefined => {
-  const split = url.split('/');
-  let tokenId, contractAddress;
-  if (split[split.length - 1]) {
-    tokenId = split[split.length - 1];
-    contractAddress = split[split.length - 2];
-  } else {
-    tokenId = split[split.length - 2];
-    contractAddress = split[split.length - 3];
-  }
+  if (!url.startsWith('https://opensea.io/assets')) return;
+
+  const parts = url.split('/');
+  const [contractAddress, tokenId] = parts.splice(parts.length - 2, 2);
+
   if (/^0x[a-fA-F0-9]{40}$/.test(contractAddress) && /^\d+$/.test(tokenId)) {
     return {
       tokenId: BigNumber.from(tokenId),
@@ -26,20 +22,40 @@ const openSea = (url: string): NFT | undefined => {
 };
 
 const rainbow = (url: string): NFT | undefined => {
+  if (!url.startsWith('https://rainbow.me')) return;
+
   const [contractAddress, tokenId] =
     new URL(url).searchParams.get('nft')?.split('_') || [];
-  return tokenId
-    ? {
-        tokenId: BigNumber.from(tokenId),
-        contractAddress: getAddress(contractAddress),
-      }
-    : undefined;
+  if (/^0x[a-fA-F0-9]{40}$/.test(contractAddress) && /^\d+$/.test(tokenId)) {
+    return {
+      tokenId: BigNumber.from(tokenId),
+      contractAddress: getAddress(contractAddress),
+    };
+  }
 };
 
-const RESOLVERS: ((url: string) => NFT | undefined)[] = [openSea, rainbow];
+const looksRare = (url: string): NFT | undefined => {
+  if (!url.startsWith('https://looksrare.org/collections')) return;
+
+  const parts = url.split('/');
+  const [contractAddress, tokenId] = parts.splice(parts.length - 2, 2);
+
+  if (/^0x[a-fA-F0-9]{40}$/.test(contractAddress) && /^\d+$/.test(tokenId)) {
+    return {
+      tokenId: BigNumber.from(tokenId),
+      contractAddress: getAddress(contractAddress),
+    };
+  }
+};
+
+const RESOLVERS: ((url: string) => NFT | undefined)[] = [
+  openSea,
+  rainbow,
+  looksRare,
+];
 
 const nftFromUrl = (url: string): NFT | undefined => {
-  let resolved;
+  let resolved: NFT;
   let index = 0;
 
   while (!resolved && index < RESOLVERS.length) {

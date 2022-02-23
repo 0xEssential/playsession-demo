@@ -71,7 +71,12 @@ const IncrementNFTCounter = (): ReactElement => {
         - if your primary account owns the NFT, it will increase your count of
         registered NFTs, persisted on-chain on Polygon.
       </p>
-      <NFTFinder onChange={(e) => setInput(e)} />
+      <NFTFinder
+        onChange={(e) => {
+          console.warn(e);
+          setInput(e);
+        }}
+      />
       <Button
         text="Register NFT from Primary"
         loading={loading}

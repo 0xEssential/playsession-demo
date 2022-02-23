@@ -113,13 +113,34 @@ const HedgehogContextProvider = ({ children }: any): ReactElement => {
   };
 
   useEffect(() => {
-    const firebase = new Firebase();
+    // const firebase = new Firebase();
     const setAuthFn = async (obj) =>
-      firebase.createIfNotExists(AUTH_TABLE, obj.lookupKey, obj);
+      fetch('/api/setAuth', {
+        method: 'POST',
+        body: JSON.stringify({
+          table: AUTH_TABLE,
+          key: obj.lookupKey,
+          obj,
+        }),
+      });
+    // firebase.createIfNotExists(AUTH_TABLE, obj.lookupKey, obj);
     const setUserFn = async (obj) =>
-      firebase.createIfNotExists(USER_TABLE, obj.username, obj);
+      fetch('/api/setUser', {
+        method: 'POST',
+        body: JSON.stringify({
+          table: USER_TABLE,
+          key: obj.username,
+          obj,
+        }),
+      });
     const getFn = async (obj) =>
-      firebase.readRecordFromFirebase(AUTH_TABLE, obj);
+      fetch('/api/getItem', {
+        method: 'POST',
+        body: JSON.stringify({
+          table: AUTH_TABLE,
+          obj,
+        }),
+      }).then((resp) => resp.json());
 
     const _hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
     setHedgehog(_hedgehog);
