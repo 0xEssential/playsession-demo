@@ -1,7 +1,6 @@
 import { Hedgehog } from '@audius/hedgehog';
+import axios from 'axios';
 import React, { createContext, ReactElement, useEffect, useState } from 'react';
-
-import Firebase from '../utils/firebase';
 
 export const messages = {
   signedIn: {
@@ -17,6 +16,28 @@ export const messages = {
   empty: `Please enter a username and password.`,
   exists: `Account already exists, please try logging in.`,
   mismatched: `The passwords you entered don't match.`,
+};
+
+const makeRequestToService = async (axiosRequestObj) => {
+  try {
+    const resp = await axios(axiosRequestObj);
+    if (resp.status === 200) {
+      return resp.data;
+    } else {
+      throw new Error(
+        `Server returned error: ${resp.status.toString()} ${
+          resp.data['error']
+        }`,
+      );
+    }
+  } catch (e) {
+    console.error(e);
+    throw new Error(
+      `Server returned error: ${e.response.status.toString()} ${
+        e.response.data['error']
+      }`,
+    );
+  }
 };
 
 type HedgehogContextValues = {
@@ -50,8 +71,8 @@ const defaultValue: HedgehogContextValues = {
 
 const HedgehogContext = createContext(defaultValue);
 
-const AUTH_TABLE = 'Authentications';
-const USER_TABLE = 'Users';
+const AUTH_TABLE = '/Authentications';
+const USER_TABLE = '/Users';
 
 const HedgehogContextProvider = ({ children }: any): ReactElement => {
   const [hedgehog, setHedgehog] = useState(null);
@@ -98,6 +119,7 @@ const HedgehogContextProvider = ({ children }: any): ReactElement => {
       setErrorMessage('');
       try {
         await hedgehog.signUp(username, password);
+        console.warn('after signup');
         checkWalletStatus();
       } catch (e) {
         console.error(e);
@@ -115,33 +137,29 @@ const HedgehogContextProvider = ({ children }: any): ReactElement => {
   useEffect(() => {
     // const firebase = new Firebase();
     const setAuthFn = async (obj) =>
-      fetch('/api/setAuth', {
-        method: 'POST',
-        body: JSON.stringify({
+      await makeRequestToService({
+        url: '/api/setAuth',
+        method: 'post',
+        data: {
           table: AUTH_TABLE,
           key: obj.lookupKey,
           obj,
-        }),
+        },
       });
-    // firebase.createIfNotExists(AUTH_TABLE, obj.lookupKey, obj);
-    const setUserFn = async (obj) =>
-      fetch('/api/setUser', {
-        method: 'POST',
-        body: JSON.stringify({
-          table: USER_TABLE,
-          key: obj.username,
-          obj,
-        }),
-      });
-    const getFn = async (obj) =>
-      fetch('/api/getItem', {
-        method: 'POST',
-        body: JSON.stringify({
-          table: AUTH_TABLE,
-          obj,
-        }),
-      }).then((resp) => resp.json());
 
+    const setUserFn = async (obj) =>
+      await makeRequestToService({
+        url: '/api/setUser',
+        method: 'post',
+        data: { obj, table: USER_TABLE, key: obj.username },
+      });
+
+    const getFn = async (obj) =>
+      await makeRequestToService({
+        url: '/api/getItem',
+        method: 'post',
+        data: { obj, table: AUTH_TABLE },
+      });
     const _hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
     setHedgehog(_hedgehog);
   }, []);

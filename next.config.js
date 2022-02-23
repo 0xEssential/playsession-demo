@@ -8,6 +8,7 @@ const nextConfig = {
     RPC_URL: process.env.RPC_URL,
     URL: process.env.URL,
     AUTOTASK_URI: process.env.AUTOTASK_URI,
+    GOOGLE_API_CREDS: process.env.GOOGLE_API_CREDS,
   },
 };
 

@@ -1,26 +1,34 @@
 import 'firebase/firestore';
 
-import firebase from 'firebase/app';
+import { credential } from 'firebase-admin';
+// import firebase from 'firebase/app';
+import {
+  App,
+  applicationDefault,
+  getApp,
+  getApps,
+  initializeApp,
+} from 'firebase-admin/app';
+import { Firestore, getFirestore } from 'firebase-admin/firestore';
+
+// initializeApp();
 
 class Firebase {
-  app: firebase.app.App;
-  db: firebase.firestore.Firestore;
+  app: App;
+  db: Firestore;
 
   constructor() {
-    const config = {
-      name: 'playsession',
-      apiKey: 'AIzaSyBt_hl5cLSC2t2xAGG2ArjTonRMxAOVKOA',
-      authDomain: 'playsession-5e04a.firebaseapp.com',
-      projectId: 'playsession-5e04a',
-      storageBucket: 'playsession-5e04a.appspot.com',
-      messagingSenderId: '650716544338',
-      appId: '1:650716544338:web:50f04e25102f95cf070e8b',
-    };
-    if (!firebase.apps.length) {
-      this.app = firebase.initializeApp(config);
-    }
+    const creds = JSON.parse(process.env.GOOGLE_API_CREDS);
 
-    this.db = firebase.firestore();
+    this.app =
+      getApps().length === 0
+        ? initializeApp({
+            credential: credential.cert(creds),
+            databaseURL: 'https://playsession-5e04a.firebaseio.com',
+          })
+        : getApp();
+
+    this.db = getFirestore();
   }
 
   async writeToFirebase(tableName, primaryKey, data) {
@@ -41,6 +49,7 @@ class Firebase {
         return this.writeToFirebase(tableName, primaryKey, data);
       }
     } catch (e) {
+      console.warn(tableName);
       throw e;
     }
   }

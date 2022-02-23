@@ -1,7 +1,7 @@
 import Firebase from '../../utils/firebase';
 
 export default async (req, res) => {
-  const { table, obj } = JSON.parse(req.body);
+  const { table, obj } = req.body;
   const firebase = new Firebase();
 
   const item = await firebase.readRecordFromFirebase(table, obj);
