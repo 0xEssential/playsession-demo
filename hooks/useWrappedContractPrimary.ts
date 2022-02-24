@@ -1,5 +1,6 @@
 import { wrapContract } from '@0xessential/metassential';
 import { Contract, ContractInterface } from '@ethersproject/contracts';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { useContext, useMemo } from 'react';
 
 import EssentialForwarder from '../abis/EssentialForwarder.json';
@@ -10,7 +11,7 @@ export default function useContract(
   ABI: ContractInterface,
 ) {
   const { address, provider } = useContext(Web3Context);
-
+  const jsonProvider = new JsonRpcProvider(process.env.RPC_URL);
   return useMemo(() => {
     return wrapContract(
       provider,
@@ -20,7 +21,7 @@ export default function useContract(
         new Contract(
           EssentialForwarder.address,
           EssentialForwarder.abi,
-          provider,
+          jsonProvider,
         ),
         { name: '0xEssential PlaySession' },
       ),

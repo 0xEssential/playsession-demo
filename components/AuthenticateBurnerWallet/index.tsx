@@ -27,9 +27,13 @@ const AuthenticateBurnerWallet = (): ReactElement => {
       PS.getSession()
         .then((resp) => {
           console.warn(resp);
+          const now = Date.now();
+          const timestamp = resp.expiresAt.mul(1000);
+
           setAuthorized(
             getAddress(resp.authorized) ===
-              getAddress(hedgehog.getWallet().getAddressString()),
+              getAddress(hedgehog.getWallet().getAddressString()) &&
+              timestamp.gt(now),
           );
         })
         .catch((e) => {

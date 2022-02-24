@@ -27,7 +27,7 @@ export default function useWrappedContract(
         new Contract(
           EssentialForwarder.address,
           EssentialForwarder.abi,
-          wallet,
+          new JsonRpcProvider(process.env.RPC_URL),
         ),
         { name: '0xEssential PlaySession' },
       ),
