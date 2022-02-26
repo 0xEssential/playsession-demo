@@ -70,18 +70,15 @@ const AuthenticateBurnerWallet = (): ReactElement => {
             account
           </p>
           {network === parseInt(process.env.CHAIN_ID, 10) ? (
-            <Button
-              text="Authorize your Burner - You Pay Gas"
-              onClick={createSession}
-            />
+            <Button text="Authorize your Burner" onClick={createSession} />
           ) : (
             <SwitchToPolygonButton />
           )}
 
-          <Button
+          {/* <Button
             text="Authorize your Burner with Signed Message"
             onClick={createSession}
-          />
+          /> */}
 
           <p>
             Authorizing your burner address submits a transaction to the Polygon

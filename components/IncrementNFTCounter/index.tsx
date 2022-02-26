@@ -28,16 +28,19 @@ const IncrementNFTCounter = (): ReactElement => {
       input.contractAddress,
       input.tokenId,
       address,
-    );
+    ).catch(() => {
+      setLoading(false);
+    });
 
-    console.warn(result);
+    if (!result) return;
+
     const response = await fetch(process.env.AUTOTASK_URI, {
       method: 'POST',
       body: JSON.stringify(result),
       headers: { 'Content-Type': 'application/json' },
     }).then((resp) => resp.json());
     // send to relayer, relayer submits tx and gives us hash that we notify
-    console.warn(response);
+
     setLoading(false);
   };
 
@@ -49,14 +52,12 @@ const IncrementNFTCounter = (): ReactElement => {
       address,
     );
 
-    console.warn(result);
-    const response = await fetch(process.env.AUTOTASK_URI, {
+    await fetch(process.env.AUTOTASK_URI, {
       method: 'POST',
       body: JSON.stringify(result),
       headers: { 'Content-Type': 'application/json' },
     }).then((resp) => resp.json());
-    // send to relayer, relayer submits tx and gives us hash that we notify
-    console.warn(response);
+
     setLoading(false);
   };
 
