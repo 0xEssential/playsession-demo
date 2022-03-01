@@ -24,7 +24,7 @@ const openSea = (url: string): NFT | undefined => {
 const rainbow = (url: string): NFT | undefined => {
   if (!url.startsWith('https://rainbow.me')) return;
 
-  const [contractAddress, tokenId] =
+  const [_chain, contractAddress, tokenId] =
     new URL(url).searchParams.get('nft')?.split('_') || [];
   if (/^0x[a-fA-F0-9]{40}$/.test(contractAddress) && /^\d+$/.test(tokenId)) {
     return {
