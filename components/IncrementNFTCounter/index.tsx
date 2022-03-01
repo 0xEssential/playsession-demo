@@ -24,7 +24,7 @@ const IncrementNFTCounter = (): ReactElement => {
 
   const registerMM = async () => {
     setLoading(true);
-    const result = await MMCounter.incrementFromForwarderOnly(
+    const result = await MMCounter.increment(
       input.contractAddress,
       input.tokenId,
       address,
@@ -46,7 +46,7 @@ const IncrementNFTCounter = (): ReactElement => {
 
   const register = async () => {
     setLoading(true);
-    const result = await Counter.incrementFromForwarderOnly(
+    const result = await Counter.increment(
       input.contractAddress,
       input.tokenId,
       address,
