@@ -21,7 +21,6 @@ export interface CounterInterface extends utils.Interface {
   functions: {
     "count(address)": FunctionFragment;
     "increment()": FunctionFragment;
-    "incrementFromForwarderOnly()": FunctionFragment;
     "isTrustedForwarder(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "setTrustedForwarder(address)": FunctionFragment;
@@ -29,10 +28,6 @@ export interface CounterInterface extends utils.Interface {
 
   encodeFunctionData(functionFragment: "count", values: [string]): string;
   encodeFunctionData(functionFragment: "increment", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "incrementFromForwarderOnly",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "isTrustedForwarder",
     values: [string]
@@ -45,10 +40,6 @@ export interface CounterInterface extends utils.Interface {
 
   decodeFunctionResult(functionFragment: "count", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "increment", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "incrementFromForwarderOnly",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "isTrustedForwarder",
     data: BytesLike
@@ -96,10 +87,6 @@ export interface Counter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    incrementFromForwarderOnly(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     isTrustedForwarder(
       forwarder: string,
       overrides?: CallOverrides
@@ -119,10 +106,6 @@ export interface Counter extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  incrementFromForwarderOnly(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   isTrustedForwarder(
     forwarder: string,
     overrides?: CallOverrides
@@ -139,8 +122,6 @@ export interface Counter extends BaseContract {
     count(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     increment(overrides?: CallOverrides): Promise<void>;
-
-    incrementFromForwarderOnly(overrides?: CallOverrides): Promise<void>;
 
     isTrustedForwarder(
       forwarder: string,
@@ -164,10 +145,6 @@ export interface Counter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    incrementFromForwarderOnly(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     isTrustedForwarder(
       forwarder: string,
       overrides?: CallOverrides
@@ -188,10 +165,6 @@ export interface Counter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     increment(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    incrementFromForwarderOnly(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

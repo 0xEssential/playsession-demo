@@ -117,7 +117,7 @@ export interface SignedOwnershipProof extends BaseContract {
 
   functions: {
     createMessage(
-      account: string,
+      nftOwner: string,
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
@@ -134,7 +134,7 @@ export interface SignedOwnershipProof extends BaseContract {
   };
 
   createMessage(
-    account: string,
+    nftOwner: string,
     nonce: BigNumberish,
     nftContract: string,
     tokenId: BigNumberish,
@@ -151,7 +151,7 @@ export interface SignedOwnershipProof extends BaseContract {
 
   callStatic: {
     createMessage(
-      account: string,
+      nftOwner: string,
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
@@ -171,7 +171,7 @@ export interface SignedOwnershipProof extends BaseContract {
 
   estimateGas: {
     createMessage(
-      account: string,
+      nftOwner: string,
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
@@ -189,7 +189,7 @@ export interface SignedOwnershipProof extends BaseContract {
 
   populateTransaction: {
     createMessage(
-      account: string,
+      nftOwner: string,
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,

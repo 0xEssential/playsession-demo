@@ -4,11 +4,12 @@ import _Counter from '../../abis/Counter.json';
 import { Web3Context } from '../../contexts/web3context';
 import useWrappedContract from '../../hooks/useWrappedContract';
 import useWrappedContractPrimary from '../../hooks/useWrappedContractPrimary';
+import { addEtherscan } from '../../utils/network';
 import { Button } from '..';
 import NFTFinder, { NFT } from '../NFTFinder';
 
 const IncrementNFTCounter = (): ReactElement => {
-  const { address } = useContext(Web3Context);
+  const { address, notify } = useContext(Web3Context);
 
   const [count, setCount] = useState(0);
   const [input, setInput] = useState<NFT>();
@@ -19,7 +20,7 @@ const IncrementNFTCounter = (): ReactElement => {
 
   const fetchCount = async () => {
     const _count = await Counter.count(address);
-    setCount(_count.toString());
+    setCount(_count.toNumber());
   };
 
   const registerMM = async () => {
@@ -52,13 +53,24 @@ const IncrementNFTCounter = (): ReactElement => {
       address,
     );
 
-    await fetch(process.env.AUTOTASK_URI, {
+    const txResult = await fetch(process.env.AUTOTASK_URI, {
       method: 'POST',
       body: JSON.stringify(result),
       headers: { 'Content-Type': 'application/json' },
-    }).then((resp) => resp.json());
+    })
+      .then((resp) => resp.json())
+      .then(({ result, status }) => {
+        if (status === 'success') {
+          return JSON.parse(result);
+        }
+      });
 
-    setLoading(false);
+    const { emitter } = notify.hash(txResult.txHash);
+    emitter.on('all', addEtherscan);
+    emitter.on('txConfirmed', () => {
+      setLoading(false);
+      setCount((count) => count + 1);
+    });
   };
 
   useEffect(() => {

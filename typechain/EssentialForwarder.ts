@@ -75,7 +75,7 @@ export interface EssentialForwarderInterface extends utils.Interface {
     "executeWithProof(bytes,bytes)": FunctionFragment;
     "getNonce(address)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
-    "getSession()": FunctionFragment;
+    "getSession(address)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "invalidateSession()": FunctionFragment;
@@ -83,6 +83,7 @@ export interface EssentialForwarderInterface extends utils.Interface {
     "preflight((address,address,address,address,uint256,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
+    "setOwnershipSigner(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "urls(uint256)": FunctionFragment;
     "verifyOwnershipProof((address,address,address,address,uint256,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
@@ -117,10 +118,7 @@ export interface EssentialForwarderInterface extends utils.Interface {
     functionFragment: "getRoleAdmin",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getSession",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "getSession", values: [string]): string;
   encodeFunctionData(
     functionFragment: "grantRole",
     values: [BytesLike, string]
@@ -148,6 +146,10 @@ export interface EssentialForwarderInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "revokeRole",
     values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setOwnershipSigner",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -202,6 +204,10 @@ export interface EssentialForwarderInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setOwnershipSigner",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -287,7 +293,7 @@ export interface EssentialForwarder extends BaseContract {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
     createMessage(
-      account: string,
+      nftOwner: string,
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
@@ -319,6 +325,7 @@ export interface EssentialForwarder extends BaseContract {
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
 
     getSession(
+      authorizer: string,
       overrides?: CallOverrides
     ): Promise<[IForwardRequest.PlaySessionStructOutput]>;
 
@@ -358,6 +365,11 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setOwnershipSigner(
+      newSigner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -377,7 +389,7 @@ export interface EssentialForwarder extends BaseContract {
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
   createMessage(
-    account: string,
+    nftOwner: string,
     nonce: BigNumberish,
     nftContract: string,
     tokenId: BigNumberish,
@@ -409,6 +421,7 @@ export interface EssentialForwarder extends BaseContract {
   getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
   getSession(
+    authorizer: string,
     overrides?: CallOverrides
   ): Promise<IForwardRequest.PlaySessionStructOutput>;
 
@@ -448,6 +461,11 @@ export interface EssentialForwarder extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setOwnershipSigner(
+    newSigner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -467,7 +485,7 @@ export interface EssentialForwarder extends BaseContract {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
     createMessage(
-      account: string,
+      nftOwner: string,
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
@@ -499,6 +517,7 @@ export interface EssentialForwarder extends BaseContract {
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
     getSession(
+      authorizer: string,
       overrides?: CallOverrides
     ): Promise<IForwardRequest.PlaySessionStructOutput>;
 
@@ -533,6 +552,11 @@ export interface EssentialForwarder extends BaseContract {
     revokeRole(
       role: BytesLike,
       account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setOwnershipSigner(
+      newSigner: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -602,7 +626,7 @@ export interface EssentialForwarder extends BaseContract {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
     createMessage(
-      account: string,
+      nftOwner: string,
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
@@ -636,7 +660,10 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSession(overrides?: CallOverrides): Promise<BigNumber>;
+    getSession(
+      authorizer: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     grantRole(
       role: BytesLike,
@@ -674,6 +701,11 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setOwnershipSigner(
+      newSigner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -696,7 +728,7 @@ export interface EssentialForwarder extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     createMessage(
-      account: string,
+      nftOwner: string,
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
@@ -733,7 +765,10 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getSession(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getSession(
+      authorizer: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     grantRole(
       role: BytesLike,
@@ -768,6 +803,11 @@ export interface EssentialForwarder extends BaseContract {
     revokeRole(
       role: BytesLike,
       account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setOwnershipSigner(
+      newSigner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
