@@ -7,15 +7,12 @@ import { Web3Context } from '../contexts/web3context';
 export default function useContract(
   contractAddress: string,
   ABI: ContractInterface,
-  _provider?: JsonRpcProvider,
+  provider: JsonRpcProvider,
 ) {
-  const { address, provider } = useContext(Web3Context);
-
-  const signerOrProvider =
-    _provider || address ? provider?.getSigner(address) : provider;
+  const { address } = useContext(Web3Context);
 
   return useMemo(
-    () => new Contract(contractAddress, ABI, signerOrProvider),
-    [address, ABI, provider],
+    () => new Contract(contractAddress, ABI, provider),
+    [address, ABI],
   );
 }
