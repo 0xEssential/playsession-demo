@@ -1,5 +1,4 @@
 import { BigNumber } from 'ethers';
-import { providers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
@@ -13,7 +12,7 @@ import SwitchToPolygonButton from '../SwitchToPolygonButton';
 
 const AuthenticateBurnerWallet = (): ReactElement => {
   const { hedgehog } = useContext(HedgehogContext);
-  const { address, network, notify, provider } = useContext(Web3Context);
+  const { address, network, notify } = useContext(Web3Context);
   const [loading, setLoading] = useState(true);
 
   const [authorized, setAuthorized] = useState(false);

@@ -1,5 +1,4 @@
 import { Contract, ContractInterface } from '@ethersproject/contracts';
-import { providers } from 'ethers';
 import { useContext, useMemo } from 'react';
 
 import { Web3Context } from '../contexts/web3context';
