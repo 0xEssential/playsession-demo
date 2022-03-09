@@ -1,5 +1,5 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
 import { BigNumber } from 'ethers';
+import { providers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
@@ -21,7 +21,7 @@ const AuthenticateBurnerWallet = (): ReactElement => {
   const PS = useContract(
     EssentialForwarderContract.address,
     EssentialForwarderContract.abi,
-    provider,
+    provider as providers.Web3Provider,
   ) as EssentialForwarder;
 
   useEffect(() => {
