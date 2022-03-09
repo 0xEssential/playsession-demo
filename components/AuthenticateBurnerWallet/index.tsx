@@ -21,7 +21,6 @@ const AuthenticateBurnerWallet = (): ReactElement => {
   const PS = useContract(
     EssentialForwarderContract.address,
     EssentialForwarderContract.abi,
-    provider as providers.Web3Provider,
   ) as EssentialForwarder;
 
   useEffect(() => {
