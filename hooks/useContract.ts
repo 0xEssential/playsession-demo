@@ -1,5 +1,5 @@
 import { Contract, ContractInterface } from '@ethersproject/contracts';
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { providers } from 'ethers';
 import { useContext, useMemo } from 'react';
 
 import { Web3Context } from '../contexts/web3context';
@@ -7,7 +7,7 @@ import { Web3Context } from '../contexts/web3context';
 export default function useContract(
   contractAddress: string,
   ABI: ContractInterface,
-  provider: JsonRpcProvider,
+  provider: providers.Web3Provider,
 ) {
   const { address } = useContext(Web3Context);
 
