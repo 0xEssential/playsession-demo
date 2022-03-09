@@ -13,7 +13,7 @@ import SwitchToPolygonButton from '../SwitchToPolygonButton';
 
 const AuthenticateBurnerWallet = (): ReactElement => {
   const { hedgehog } = useContext(HedgehogContext);
-  const { address, network, notify } = useContext(Web3Context);
+  const { address, network, notify, provider } = useContext(Web3Context);
   const [loading, setLoading] = useState(true);
 
   const [authorized, setAuthorized] = useState(false);
@@ -21,7 +21,7 @@ const AuthenticateBurnerWallet = (): ReactElement => {
   const PS = useContract(
     EssentialForwarderContract.address,
     EssentialForwarderContract.abi,
-    new JsonRpcProvider(process.env.RPC_URL),
+    provider,
   ) as EssentialForwarder;
 
   useEffect(() => {
