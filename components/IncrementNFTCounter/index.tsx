@@ -1,9 +1,11 @@
+import { Contract } from '@ethersproject/contracts';
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
 import _Counter from '../../abis/Counter.json';
 import { Web3Context } from '../../contexts/web3context';
 import useWrappedContract from '../../hooks/useWrappedContract';
 import useWrappedContractPrimary from '../../hooks/useWrappedContractPrimary';
+import { Counter } from '../../typechain';
 import { addEtherscan } from '../../utils/network';
 import { Button } from '..';
 import NFTFinder, { NFT } from '../NFTFinder';
@@ -15,10 +17,14 @@ const IncrementNFTCounter = (): ReactElement => {
   const [input, setInput] = useState<NFT>();
   const [loading, setLoading] = useState(false);
 
-  const Counter = useWrappedContract(_Counter.address, _Counter.abi);
+  const Counter = useWrappedContract(
+    _Counter.address,
+    _Counter.abi,
+  ) as Contract;
   const MMCounter = useWrappedContractPrimary(_Counter.address, _Counter.abi);
 
   const fetchCount = async () => {
+    console.warn(Counter);
     const _count = await Counter.count(address);
     setCount(_count.toNumber());
   };
@@ -74,7 +80,8 @@ const IncrementNFTCounter = (): ReactElement => {
   };
 
   useEffect(() => {
-    fetchCount();
+    const _fetch = async () => fetchCount();
+    if (Counter) _fetch();
   }, []);
   return (
     <>
