@@ -5,7 +5,6 @@ import _Counter from '../../abis/Counter.json';
 import { Web3Context } from '../../contexts/web3context';
 import useWrappedContract from '../../hooks/useWrappedContract';
 import useWrappedContractPrimary from '../../hooks/useWrappedContractPrimary';
-import { Counter } from '../../typechain';
 import { addEtherscan } from '../../utils/network';
 import { Button } from '..';
 import NFTFinder, { NFT } from '../NFTFinder';
