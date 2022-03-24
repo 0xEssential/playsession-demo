@@ -19,21 +19,12 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export declare namespace IForwardRequest {
-  export type PlaySessionStruct = {
-    authorized: string;
-    expiresAt: BigNumberish;
-  };
-
-  export type PlaySessionStructOutput = [string, BigNumber] & {
-    authorized: string;
-    expiresAt: BigNumber;
-  };
-
-  export type ForwardRequestStruct = {
+  export type ERC721ForwardRequestStruct = {
     from: string;
     authorizer: string;
     to: string;
     nftContract: string;
+    nftNonce: BigNumberish;
     tokenId: BigNumberish;
     value: BigNumberish;
     gas: BigNumberish;
@@ -41,11 +32,12 @@ export declare namespace IForwardRequest {
     data: BytesLike;
   };
 
-  export type ForwardRequestStructOutput = [
+  export type ERC721ForwardRequestStructOutput = [
     string,
     string,
     string,
     string,
+    BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
@@ -56,11 +48,22 @@ export declare namespace IForwardRequest {
     authorizer: string;
     to: string;
     nftContract: string;
+    nftNonce: BigNumber;
     tokenId: BigNumber;
     value: BigNumber;
     gas: BigNumber;
     nonce: BigNumber;
     data: string;
+  };
+
+  export type PlaySessionStruct = {
+    authorized: string;
+    expiresAt: BigNumberish;
+  };
+
+  export type PlaySessionStructOutput = [string, BigNumber] & {
+    authorized: string;
+    expiresAt: BigNumber;
   };
 }
 
@@ -69,24 +72,27 @@ export interface EssentialForwarderInterface extends utils.Interface {
   functions: {
     "ADMIN_ROLE()": FunctionFragment;
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
-    "createMessage(address,uint256,address,uint256)": FunctionFragment;
+    "createMessage(address,uint256,address,uint256,uint256)": FunctionFragment;
     "createSession(address,uint256)": FunctionFragment;
-    "createSignedSession(bytes,address,uint256,address)": FunctionFragment;
+    "execute((address,address,address,address,uint256,uint256,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
     "executeWithProof(bytes,bytes)": FunctionFragment;
+    "getChainId()": FunctionFragment;
     "getNonce(address)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getSession(address)": FunctionFragment;
+    "getTokenNonce(address,uint256)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "invalidateSession()": FunctionFragment;
     "ownershipSigner()": FunctionFragment;
-    "preflight((address,address,address,address,uint256,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
+    "preflight((address,address,address,address,uint256,uint256,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "setOwnershipSigner(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "urls(uint256)": FunctionFragment;
-    "verifyOwnershipProof((address,address,address,address,uint256,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
+    "verify((address,address,address,address,uint256,uint256,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
+    "verifyOwnershipProof((address,address,address,address,uint256,uint256,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -99,19 +105,23 @@ export interface EssentialForwarderInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "createMessage",
-    values: [string, BigNumberish, string, BigNumberish]
+    values: [string, BigNumberish, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "createSession",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "createSignedSession",
-    values: [BytesLike, string, BigNumberish, string]
+    functionFragment: "execute",
+    values: [IForwardRequest.ERC721ForwardRequestStruct, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "executeWithProof",
     values: [BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getChainId",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "getNonce", values: [string]): string;
   encodeFunctionData(
@@ -119,6 +129,10 @@ export interface EssentialForwarderInterface extends utils.Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "getSession", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "getTokenNonce",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "grantRole",
     values: [BytesLike, string]
@@ -137,7 +151,7 @@ export interface EssentialForwarderInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "preflight",
-    values: [IForwardRequest.ForwardRequestStruct, BytesLike]
+    values: [IForwardRequest.ERC721ForwardRequestStruct, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceRole",
@@ -157,8 +171,12 @@ export interface EssentialForwarderInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "urls", values: [BigNumberish]): string;
   encodeFunctionData(
+    functionFragment: "verify",
+    values: [IForwardRequest.ERC721ForwardRequestStruct, BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "verifyOwnershipProof",
-    values: [IForwardRequest.ForwardRequestStruct, BytesLike]
+    values: [IForwardRequest.ERC721ForwardRequestStruct, BytesLike]
   ): string;
 
   decodeFunctionResult(functionFragment: "ADMIN_ROLE", data: BytesLike): Result;
@@ -174,20 +192,22 @@ export interface EssentialForwarderInterface extends utils.Interface {
     functionFragment: "createSession",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "createSignedSession",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "execute", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "executeWithProof",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getChainId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getRoleAdmin",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getSession", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokenNonce",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(
@@ -213,6 +233,7 @@ export interface EssentialForwarderInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "urls", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "verify", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "verifyOwnershipProof",
     data: BytesLike
@@ -297,6 +318,7 @@ export interface EssentialForwarder extends BaseContract {
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
+      tokenNonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -306,12 +328,10 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    createSignedSession(
+    execute(
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
-      authorized: string,
-      length: BigNumberish,
-      sender: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     executeWithProof(
@@ -319,6 +339,10 @@ export interface EssentialForwarder extends BaseContract {
       extraData: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    getChainId(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { id: BigNumber }>;
 
     getNonce(from: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -328,6 +352,12 @@ export interface EssentialForwarder extends BaseContract {
       authorizer: string,
       overrides?: CallOverrides
     ): Promise<[IForwardRequest.PlaySessionStructOutput]>;
+
+    getTokenNonce(
+      contractAddress: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     grantRole(
       role: BytesLike,
@@ -348,7 +378,7 @@ export interface EssentialForwarder extends BaseContract {
     ownershipSigner(overrides?: CallOverrides): Promise<[string]>;
 
     preflight(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<[void]>;
@@ -377,8 +407,14 @@ export interface EssentialForwarder extends BaseContract {
 
     urls(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
+    verify(
+      req: IForwardRequest.ERC721ForwardRequestStruct,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     verifyOwnershipProof(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -393,6 +429,7 @@ export interface EssentialForwarder extends BaseContract {
     nonce: BigNumberish,
     nftContract: string,
     tokenId: BigNumberish,
+    tokenNonce: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -402,12 +439,10 @@ export interface EssentialForwarder extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  createSignedSession(
+  execute(
+    req: IForwardRequest.ERC721ForwardRequestStruct,
     signature: BytesLike,
-    authorized: string,
-    length: BigNumberish,
-    sender: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   executeWithProof(
@@ -415,6 +450,8 @@ export interface EssentialForwarder extends BaseContract {
     extraData: BytesLike,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  getChainId(overrides?: CallOverrides): Promise<BigNumber>;
 
   getNonce(from: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -424,6 +461,12 @@ export interface EssentialForwarder extends BaseContract {
     authorizer: string,
     overrides?: CallOverrides
   ): Promise<IForwardRequest.PlaySessionStructOutput>;
+
+  getTokenNonce(
+    contractAddress: string,
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   grantRole(
     role: BytesLike,
@@ -444,7 +487,7 @@ export interface EssentialForwarder extends BaseContract {
   ownershipSigner(overrides?: CallOverrides): Promise<string>;
 
   preflight(
-    req: IForwardRequest.ForwardRequestStruct,
+    req: IForwardRequest.ERC721ForwardRequestStruct,
     signature: BytesLike,
     overrides?: CallOverrides
   ): Promise<void>;
@@ -473,8 +516,14 @@ export interface EssentialForwarder extends BaseContract {
 
   urls(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  verify(
+    req: IForwardRequest.ERC721ForwardRequestStruct,
+    signature: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   verifyOwnershipProof(
-    req: IForwardRequest.ForwardRequestStruct,
+    req: IForwardRequest.ERC721ForwardRequestStruct,
     signature: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -489,6 +538,7 @@ export interface EssentialForwarder extends BaseContract {
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
+      tokenNonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -498,19 +548,19 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    createSignedSession(
+    execute(
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
-      authorized: string,
-      length: BigNumberish,
-      sender: string,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<[boolean, string]>;
 
     executeWithProof(
       response: BytesLike,
       extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean, string]>;
+
+    getChainId(overrides?: CallOverrides): Promise<BigNumber>;
 
     getNonce(from: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -520,6 +570,12 @@ export interface EssentialForwarder extends BaseContract {
       authorizer: string,
       overrides?: CallOverrides
     ): Promise<IForwardRequest.PlaySessionStructOutput>;
+
+    getTokenNonce(
+      contractAddress: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     grantRole(
       role: BytesLike,
@@ -538,7 +594,7 @@ export interface EssentialForwarder extends BaseContract {
     ownershipSigner(overrides?: CallOverrides): Promise<string>;
 
     preflight(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -567,8 +623,14 @@ export interface EssentialForwarder extends BaseContract {
 
     urls(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+    verify(
+      req: IForwardRequest.ERC721ForwardRequestStruct,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     verifyOwnershipProof(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -630,6 +692,7 @@ export interface EssentialForwarder extends BaseContract {
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
+      tokenNonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -639,12 +702,10 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    createSignedSession(
+    execute(
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
-      authorized: string,
-      length: BigNumberish,
-      sender: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     executeWithProof(
@@ -652,6 +713,8 @@ export interface EssentialForwarder extends BaseContract {
       extraData: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    getChainId(overrides?: CallOverrides): Promise<BigNumber>;
 
     getNonce(from: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -662,6 +725,12 @@ export interface EssentialForwarder extends BaseContract {
 
     getSession(
       authorizer: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTokenNonce(
+      contractAddress: string,
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -684,7 +753,7 @@ export interface EssentialForwarder extends BaseContract {
     ownershipSigner(overrides?: CallOverrides): Promise<BigNumber>;
 
     preflight(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -713,8 +782,14 @@ export interface EssentialForwarder extends BaseContract {
 
     urls(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
+    verify(
+      req: IForwardRequest.ERC721ForwardRequestStruct,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     verifyOwnershipProof(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -732,6 +807,7 @@ export interface EssentialForwarder extends BaseContract {
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
+      tokenNonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -741,12 +817,10 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    createSignedSession(
+    execute(
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
-      authorized: string,
-      length: BigNumberish,
-      sender: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     executeWithProof(
@@ -754,6 +828,8 @@ export interface EssentialForwarder extends BaseContract {
       extraData: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    getChainId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getNonce(
       from: string,
@@ -767,6 +843,12 @@ export interface EssentialForwarder extends BaseContract {
 
     getSession(
       authorizer: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTokenNonce(
+      contractAddress: string,
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -789,7 +871,7 @@ export interface EssentialForwarder extends BaseContract {
     ownershipSigner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     preflight(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -821,8 +903,14 @@ export interface EssentialForwarder extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    verify(
+      req: IForwardRequest.ERC721ForwardRequestStruct,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     verifyOwnershipProof(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

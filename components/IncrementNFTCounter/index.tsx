@@ -82,6 +82,13 @@ const IncrementNFTCounter = (): ReactElement => {
       { name: '0xEssential PlaySession' },
     );
 
+    const nftNonce = (
+      await forwardingContract.getTokenNonce(
+        input.contractAddress,
+        input.tokenId,
+      )
+    ).toNumber();
+
     const result = await signMetaTxRequest(
       burner.privateKey,
       parseInt(process.env.CHAIN_ID, 10),
@@ -91,7 +98,7 @@ const IncrementNFTCounter = (): ReactElement => {
         authorizer: address,
         nftContract: input.contractAddress,
         tokenId: input.tokenId.toString(),
-        nftNonce: 0,
+        nftNonce,
         data,
       },
       forwardingContract,

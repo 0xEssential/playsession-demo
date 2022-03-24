@@ -16,11 +16,12 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export declare namespace IForwardRequest {
-  export type ForwardRequestStruct = {
+  export type ERC721ForwardRequestStruct = {
     from: string;
     authorizer: string;
     to: string;
     nftContract: string;
+    nftNonce: BigNumberish;
     tokenId: BigNumberish;
     value: BigNumberish;
     gas: BigNumberish;
@@ -28,11 +29,12 @@ export declare namespace IForwardRequest {
     data: BytesLike;
   };
 
-  export type ForwardRequestStructOutput = [
+  export type ERC721ForwardRequestStructOutput = [
     string,
     string,
     string,
     string,
+    BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
@@ -43,6 +45,7 @@ export declare namespace IForwardRequest {
     authorizer: string;
     to: string;
     nftContract: string;
+    nftNonce: BigNumber;
     tokenId: BigNumber;
     value: BigNumber;
     gas: BigNumber;
@@ -54,14 +57,14 @@ export declare namespace IForwardRequest {
 export interface SignedOwnershipProofInterface extends utils.Interface {
   contractName: "SignedOwnershipProof";
   functions: {
-    "createMessage(address,uint256,address,uint256)": FunctionFragment;
+    "createMessage(address,uint256,address,uint256,uint256)": FunctionFragment;
     "ownershipSigner()": FunctionFragment;
-    "verifyOwnershipProof((address,address,address,address,uint256,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
+    "verifyOwnershipProof((address,address,address,address,uint256,uint256,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "createMessage",
-    values: [string, BigNumberish, string, BigNumberish]
+    values: [string, BigNumberish, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "ownershipSigner",
@@ -69,7 +72,7 @@ export interface SignedOwnershipProofInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "verifyOwnershipProof",
-    values: [IForwardRequest.ForwardRequestStruct, BytesLike]
+    values: [IForwardRequest.ERC721ForwardRequestStruct, BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -121,13 +124,14 @@ export interface SignedOwnershipProof extends BaseContract {
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
+      tokenNonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
     ownershipSigner(overrides?: CallOverrides): Promise<[string]>;
 
     verifyOwnershipProof(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -138,13 +142,14 @@ export interface SignedOwnershipProof extends BaseContract {
     nonce: BigNumberish,
     nftContract: string,
     tokenId: BigNumberish,
+    tokenNonce: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
   ownershipSigner(overrides?: CallOverrides): Promise<string>;
 
   verifyOwnershipProof(
-    req: IForwardRequest.ForwardRequestStruct,
+    req: IForwardRequest.ERC721ForwardRequestStruct,
     signature: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -155,13 +160,14 @@ export interface SignedOwnershipProof extends BaseContract {
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
+      tokenNonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
     ownershipSigner(overrides?: CallOverrides): Promise<string>;
 
     verifyOwnershipProof(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -175,13 +181,14 @@ export interface SignedOwnershipProof extends BaseContract {
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
+      tokenNonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     ownershipSigner(overrides?: CallOverrides): Promise<BigNumber>;
 
     verifyOwnershipProof(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -193,13 +200,14 @@ export interface SignedOwnershipProof extends BaseContract {
       nonce: BigNumberish,
       nftContract: string,
       tokenId: BigNumberish,
+      tokenNonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     ownershipSigner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     verifyOwnershipProof(
-      req: IForwardRequest.ForwardRequestStruct,
+      req: IForwardRequest.ERC721ForwardRequestStruct,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
