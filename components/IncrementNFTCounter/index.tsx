@@ -1,30 +1,48 @@
+import { signMetaTxRequest } from '@0xessential/metassential';
 import { Contract } from '@ethersproject/contracts';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { Wallet } from 'ethers';
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
 import _Counter from '../../abis/Counter.json';
+import EssentialForwarder from '../../abis/EssentialForwarder.json';
+import { HedgehogContext } from '../../contexts/hedgehogContext';
 import { Web3Context } from '../../contexts/web3context';
-import useWrappedContract from '../../hooks/useWrappedContract';
 import useWrappedContractPrimary from '../../hooks/useWrappedContractPrimary';
+import { Counter } from '../../typechain';
 import { addEtherscan } from '../../utils/network';
 import { Button } from '..';
 import NFTFinder, { NFT } from '../NFTFinder';
 
 const IncrementNFTCounter = (): ReactElement => {
   const { address, notify } = useContext(Web3Context);
+  const { hedgehog } = useContext(HedgehogContext);
 
   const [count, setCount] = useState(0);
   const [input, setInput] = useState<NFT>();
   const [loading, setLoading] = useState(false);
+  const [burner, setBurner] = useState<Wallet>();
 
-  const Counter = useWrappedContract(
+  useEffect(() => {
+    if (!hedgehog) return;
+    const wallet = new Wallet(
+      hedgehog.getWallet().privKey,
+      new JsonRpcProvider(process.env.RPC_URL),
+    );
+    setBurner(wallet);
+  }, [hedgehog]);
+
+  const CounterContract = new Contract(
     _Counter.address,
     _Counter.abi,
-  ) as Contract;
+    new JsonRpcProvider(process.env.RPC_URL),
+  ) as Counter;
+
   const MMCounter = useWrappedContractPrimary(_Counter.address, _Counter.abi);
 
   const fetchCount = async () => {
-    console.warn(Counter);
-    const _count = await Counter.count(address);
+    const _count = await CounterContract.count(address);
+    console.warn(_count);
     setCount(_count.toNumber());
   };
 
@@ -52,10 +70,31 @@ const IncrementNFTCounter = (): ReactElement => {
 
   const register = async () => {
     setLoading(true);
-    const result = await Counter.increment(
-      input.contractAddress,
-      input.tokenId,
-      address,
+
+    const data = CounterContract.interface.encodeFunctionData('increment');
+
+    const forwardingContract = Object.assign(
+      new Contract(
+        EssentialForwarder.address,
+        EssentialForwarder.abi,
+        new JsonRpcProvider(process.env.RPC_URL),
+      ),
+      { name: '0xEssential PlaySession' },
+    );
+
+    const result = await signMetaTxRequest(
+      burner.privateKey,
+      parseInt(process.env.CHAIN_ID, 10),
+      {
+        to: CounterContract.address,
+        from: burner.address,
+        authorizer: address,
+        nftContract: input.contractAddress,
+        tokenId: input.tokenId.toString(),
+        nftNonce: 0,
+        data,
+      },
+      forwardingContract,
     );
 
     const txResult = await fetch(process.env.AUTOTASK_URI, {
@@ -71,7 +110,8 @@ const IncrementNFTCounter = (): ReactElement => {
       });
 
     const { emitter } = notify.hash(txResult.txHash);
-    emitter.on('all', addEtherscan);
+    console.warn(txResult);
+    emitter.on('all', () => addEtherscan({ hash: txResult.txHash }));
     emitter.on('txConfirmed', () => {
       setLoading(false);
       setCount((count) => count + 1);
@@ -80,7 +120,7 @@ const IncrementNFTCounter = (): ReactElement => {
 
   useEffect(() => {
     const _fetch = async () => fetchCount();
-    if (Counter) _fetch();
+    if (CounterContract) _fetch();
   }, []);
   return (
     <>
