@@ -12,6 +12,7 @@
   "dependencies": {
     "@0xessential/metassential": "https://github.com/0xEssential/metassential#456bb5f",
     "@audius/hedgehog": "^1.0.12",
+    "@metamask/eth-sig-util": "^4.0.1",
     "axios": "^0.26.0",
     "bnc-notify": "^1.9.4",
     "bnc-onboard": "^1.38.1",
