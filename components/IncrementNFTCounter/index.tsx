@@ -1,4 +1,3 @@
-import { signMetaTxRequest } from '@0xessential/metassential';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Wallet } from 'ethers';
@@ -11,6 +10,7 @@ import { Web3Context } from '../../contexts/web3context';
 import useWrappedContractPrimary from '../../hooks/useWrappedContractPrimary';
 import { Counter } from '../../typechain';
 import { addEtherscan } from '../../utils/network';
+import { signMetaTxRequest } from '../../utils/signer';
 import { Button } from '..';
 import NFTFinder, { NFT } from '../NFTFinder';
 
@@ -82,13 +82,6 @@ const IncrementNFTCounter = (): ReactElement => {
       { name: '0xEssential PlaySession' },
     );
 
-    const nftNonce = (
-      await forwardingContract.getTokenNonce(
-        input.contractAddress,
-        input.tokenId,
-      )
-    ).toNumber();
-
     const result = await signMetaTxRequest(
       burner.privateKey,
       parseInt(process.env.CHAIN_ID, 10),
@@ -97,8 +90,9 @@ const IncrementNFTCounter = (): ReactElement => {
         from: burner.address,
         authorizer: address,
         nftContract: input.contractAddress,
-        tokenId: input.tokenId.toString(),
-        nftNonce,
+        nftChainId: '1',
+        nftTokenId: input.tokenId.toString(),
+        targetChainId: process.env.CHAIN_ID,
         data,
       },
       forwardingContract,
@@ -116,13 +110,19 @@ const IncrementNFTCounter = (): ReactElement => {
         }
       });
 
-    const { emitter } = notify.hash(txResult.txHash);
-    console.warn(txResult);
-    emitter.on('all', () => addEtherscan({ hash: txResult.txHash }));
-    emitter.on('txConfirmed', () => {
+    if (txResult.txHash) {
       setLoading(false);
-      setCount((count) => count + 1);
-    });
+
+      const { emitter } = notify.hash(txResult.txHash);
+
+      emitter.on('all', () => addEtherscan({ hash: txResult.txHash }));
+      emitter.on('txConfirmed', () => {
+        setCount((count) => count + 1);
+      });
+    } else {
+      setLoading(false);
+      alert(txResult.error);
+    }
   };
 
   useEffect(() => {
