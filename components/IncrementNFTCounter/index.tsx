@@ -1,21 +1,20 @@
+import { EssentialSigner } from '@0xessential/signers';
 import { Contract } from '@ethersproject/contracts';
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Wallet } from 'ethers';
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
 import _Counter from '../../abis/Counter.json';
-import EssentialForwarder from '../../abis/EssentialForwarder.json';
 import { HedgehogContext } from '../../contexts/hedgehogContext';
 import { Web3Context } from '../../contexts/web3context';
 import useWrappedContractPrimary from '../../hooks/useWrappedContractPrimary';
 import { Counter } from '../../typechain';
 import { addEtherscan } from '../../utils/network';
-import { signMetaTxRequest } from '../../utils/signer';
 import { Button } from '..';
 import NFTFinder, { NFT } from '../NFTFinder';
 
 const IncrementNFTCounter = (): ReactElement => {
-  const { address, notify } = useContext(Web3Context);
+  const { address, provider, notify } = useContext(Web3Context);
   const { hedgehog } = useContext(HedgehogContext);
 
   const [count, setCount] = useState(0);
@@ -71,57 +70,39 @@ const IncrementNFTCounter = (): ReactElement => {
   const register = async () => {
     setLoading(true);
 
-    const data = CounterContract.interface.encodeFunctionData('increment');
+    const essentialCounter = new Contract(
+      _Counter.address,
+      _Counter.abi,
+      // constructor should take main provider and optional burner
+      // would allow removing authorizer from customData
+      new EssentialSigner(burner.address, provider as Web3Provider, burner),
+    ) as Counter;
 
-    const forwardingContract = Object.assign(
-      new Contract(
-        EssentialForwarder.address,
-        EssentialForwarder.abi,
-        new JsonRpcProvider(process.env.RPC_URL),
-      ),
-      { name: '0xEssential PlaySession' },
-    );
+    // Perhaps we should provide our own typed overrides?
+    // it does sorta feel like we need an EssentialContract here, unless
+    // we are able to return an object that conforms to ContractTransaction
 
-    const result = await signMetaTxRequest(
-      burner.privateKey,
-      parseInt(process.env.CHAIN_ID, 10),
-      {
-        to: CounterContract.address,
-        from: burner.address,
-        authorizer: address,
+    const { hash } = await essentialCounter.increment({
+      customData: {
+        authorizer: address, // address that owns NFT
         nftContract: input.contractAddress,
         nftChainId: '1',
         nftTokenId: input.tokenId.toString(),
-        targetChainId: process.env.CHAIN_ID,
-        data,
       },
-      forwardingContract,
-    );
+    });
 
-    const txResult = await fetch(process.env.AUTOTASK_URI, {
-      method: 'POST',
-      body: JSON.stringify(result),
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then((resp) => resp.json())
-      .then(({ result, status }) => {
-        if (status === 'success') {
-          return JSON.parse(result);
-        }
-      });
-
-    if (txResult.txHash) {
+    if (hash) {
       setLoading(false);
 
-      const { emitter } = notify.hash(txResult.txHash);
+      const { emitter } = notify.hash(hash);
 
-      emitter.on('all', () => addEtherscan({ hash: txResult.txHash }));
+      emitter.on('all', () => addEtherscan({ hash }));
       emitter.on('txConfirmed', () => {
         setCount((count) => count + 1);
       });
     } else {
       setLoading(false);
-      alert(txResult.error);
+      alert('error');
     }
   };
 
