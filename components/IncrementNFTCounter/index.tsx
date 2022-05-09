@@ -1,5 +1,4 @@
-import { EssentialSigner } from '@0xessential/signers';
-import { signMetaTxRequest } from '@0xessential/signers/dist/types/EssentialSigner/messageSigner';
+import { EssentialSigner, signMetaTxRequest } from '@0xessential/signers';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Wallet } from 'ethers';
