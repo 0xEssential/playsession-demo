@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@0xessential/signers@^0.0.1-beta":
-  version "0.0.1-beta-3"
-  resolved "https://registry.yarnpkg.com/@0xessential/signers/-/signers-0.0.1-beta-3.tgz#36740ce6e3d723cd4f0b5032727071d1c51c4e54"
-  integrity sha512-3dmZ/IitjrXAgDULJi17pzdUtTE1kgVMePu6lprsLG4BQ1PZCEPKrCNfsGL2diHBwq6nwuLDdNz0ot1ShOchyw==
+"@0xessential/signers@^0.0.1-beta-10":
+  version "0.0.1-beta-10"
+  resolved "https://registry.yarnpkg.com/@0xessential/signers/-/signers-0.0.1-beta-10.tgz#4e5a262b55bd884035924c2a8136d04c96a1592a"
+  integrity sha512-t+6QgJnJJiOH5stlpZ3JcLkvcZLR2uAUfrH5TlQI/E94KWutni0P1F3BITwoRtCvjAXvDUygVY5Gf/l2r65BoQ==
   dependencies:
     "@metamask/eth-sig-util" "^4.0.1"
     ethers "^5.6.1"

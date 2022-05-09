@@ -10,7 +10,7 @@
     "lintfix": "eslint '**/*.{js,jsx,ts,tsx}' --fix"
   },
   "dependencies": {
-    "@0xessential/signers": "^0.0.1-beta",
+    "@0xessential/signers": "^0.0.1-beta-10",
     "@audius/hedgehog": "^1.0.12",
     "@metamask/eth-sig-util": "^4.0.1",
     "axios": "^0.26.0",
