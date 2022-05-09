@@ -57,7 +57,7 @@ const IncrementNFTCounter = (): ReactElement => {
 
     if (!result) return;
 
-    await fetch(process.env.AUTOTASK_URI, {
+    await fetch('/proxyAutotask', {
       method: 'POST',
       body: JSON.stringify(result),
       headers: { 'Content-Type': 'application/json' },
