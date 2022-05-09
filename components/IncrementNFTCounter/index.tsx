@@ -1,4 +1,5 @@
 import { EssentialSigner } from '@0xessential/signers';
+import { signMetaTxRequest } from '@0xessential/signers/dist/types/EssentialSigner/messageSigner';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Wallet } from 'ethers';
@@ -7,7 +8,6 @@ import React, { ReactElement, useContext, useEffect, useState } from 'react';
 import _Counter from '../../abis/Counter.json';
 import { HedgehogContext } from '../../contexts/hedgehogContext';
 import { Web3Context } from '../../contexts/web3context';
-import useWrappedContractPrimary from '../../hooks/useWrappedContractPrimary';
 import { Counter } from '../../typechain';
 import { addEtherscan } from '../../utils/network';
 import { Button } from '..';
@@ -37,7 +37,7 @@ const IncrementNFTCounter = (): ReactElement => {
     new JsonRpcProvider(process.env.RPC_URL),
   ) as Counter;
 
-  const MMCounter = useWrappedContractPrimary(_Counter.address, _Counter.abi);
+  const MMCounter = new Contract(_Counter.address, _Counter.abi, provider);
 
   const fetchCount = async () => {
     const _count = await CounterContract.count(address);
@@ -47,13 +47,21 @@ const IncrementNFTCounter = (): ReactElement => {
 
   const registerMM = async () => {
     setLoading(true);
-    const result = await MMCounter.increment(
-      input.contractAddress,
-      input.tokenId,
-      address,
-    ).catch(() => {
-      setLoading(false);
-    });
+    const data = MMCounter.interface.encodeFunctionData('increment');
+
+    const result = signMetaTxRequest(
+      provider,
+      parseInt(process.env.CHAIN_ID, 10),
+      {
+        authorizer: address, // address that owns NFT
+        nftContract: input.contractAddress,
+        nftChainId: '1',
+        nftTokenId: input.tokenId.toString(),
+        data,
+      },
+    );
+
+    setLoading(false);
 
     if (!result) return;
 
