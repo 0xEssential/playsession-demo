@@ -1,11 +1,11 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
-import { BigNumber, Contract } from 'ethers';
+import { BigNumber } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
 import EssentialForwarderContract from '../../abis/EssentialForwarder.json';
 import { HedgehogContext } from '../../contexts/hedgehogContext';
 import { Web3Context } from '../../contexts/web3context';
+import useContract from '../../hooks/useContract';
 import { EssentialForwarder } from '../../typechain';
 import { Button } from '..';
 import SwitchToPolygonButton from '../SwitchToPolygonButton';
@@ -17,10 +17,9 @@ const AuthenticateBurnerWallet = (): ReactElement => {
 
   const [authorized, setAuthorized] = useState(false);
 
-  const PS = new Contract(
+  const PS = useContract(
     EssentialForwarderContract.address,
     EssentialForwarderContract.abi,
-    new JsonRpcProvider(process.env.RPC_URL),
   ) as EssentialForwarder;
 
   useEffect(() => {

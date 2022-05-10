@@ -5,6 +5,7 @@ import { Wallet } from 'ethers';
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
 import _Counter from '../../abis/Counter.json';
+import EssentialForwarderContract from '../../abis/EssentialForwarder.json';
 import { HedgehogContext } from '../../contexts/hedgehogContext';
 import { Web3Context } from '../../contexts/web3context';
 import { Counter } from '../../typechain';
@@ -48,21 +49,31 @@ const IncrementNFTCounter = (): ReactElement => {
     setLoading(true);
     const data = MMCounter.interface.encodeFunctionData('increment');
 
-    const result = signMetaTxRequest(
+    const result = await signMetaTxRequest(
       provider,
       parseInt(process.env.CHAIN_ID, 10),
       {
+        to: _Counter.address,
+        from: address,
         authorizer: address, // address that owns NFT
         nftContract: input.contractAddress,
         nftChainId: '1',
         nftTokenId: input.tokenId.toString(),
+        targetChainId: '80001',
         data,
       },
-    );
-
-    setLoading(false);
+      new Contract(
+        EssentialForwarderContract.address,
+        EssentialForwarderContract.abi,
+        new JsonRpcProvider(process.env.RPC_URL),
+      ),
+    ).catch(() => {
+      setLoading(false);
+    });
+    console.warn(result);
 
     if (!result) return;
+    setLoading(false);
 
     await fetch('/proxyAutotask', {
       method: 'POST',
@@ -77,13 +88,21 @@ const IncrementNFTCounter = (): ReactElement => {
   const register = async () => {
     setLoading(true);
 
+    const signer = new EssentialSigner(
+      burner.address,
+      provider as Web3Provider,
+      burner,
+    );
+
+    console.warn(signer);
+
     const essentialCounter = new Contract(
       _Counter.address,
       _Counter.abi,
-      // constructor should take main provider and optional burner
-      // would allow removing authorizer from customData
-      new EssentialSigner(burner.address, provider as Web3Provider, burner),
+      signer,
     ) as Counter;
+
+    console.warn(essentialCounter);
 
     // Perhaps we should provide our own typed overrides?
     // it does sorta feel like we need an EssentialContract here, unless
@@ -97,7 +116,7 @@ const IncrementNFTCounter = (): ReactElement => {
         nftTokenId: input.tokenId.toString(),
       },
     });
-
+    console.warn(hash);
     if (hash) {
       setLoading(false);
 

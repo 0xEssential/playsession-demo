@@ -9,7 +9,7 @@ import { Web3Context } from '../contexts/web3context';
 
 // Initialize Firebase
 const Home: NextPage = () => {
-  const { onboard, address } = useContext(Web3Context);
+  const { onboard, address, provider } = useContext(Web3Context);
   const {
     hedgehog,
     signedIn,
@@ -44,7 +44,7 @@ const Home: NextPage = () => {
             <>
               <p>Your Primary address is:</p>
               <p className="address">{address}</p>
-              <AuthenticateBurnerWallet />
+              {provider && <AuthenticateBurnerWallet />}
               <IncrementNFTCounter />
             </>
           ) : (
