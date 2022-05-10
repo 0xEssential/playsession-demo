@@ -94,15 +94,11 @@ const IncrementNFTCounter = (): ReactElement => {
       burner,
     );
 
-    console.warn(signer);
-
     const essentialCounter = new Contract(
       _Counter.address,
       _Counter.abi,
       signer,
     ) as Counter;
-
-    console.warn(essentialCounter);
 
     // Perhaps we should provide our own typed overrides?
     // it does sorta feel like we need an EssentialContract here, unless
