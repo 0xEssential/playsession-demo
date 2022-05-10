@@ -1,13 +1,13 @@
-import { EssentialSigner } from '@0xessential/signers';
+import { EssentialSigner, signMetaTxRequest } from '@0xessential/signers';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Wallet } from 'ethers';
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
 import _Counter from '../../abis/Counter.json';
+import EssentialForwarderContract from '../../abis/EssentialForwarder.json';
 import { HedgehogContext } from '../../contexts/hedgehogContext';
 import { Web3Context } from '../../contexts/web3context';
-import useWrappedContractPrimary from '../../hooks/useWrappedContractPrimary';
 import { Counter } from '../../typechain';
 import { addEtherscan } from '../../utils/network';
 import { Button } from '..';
@@ -37,7 +37,7 @@ const IncrementNFTCounter = (): ReactElement => {
     new JsonRpcProvider(process.env.RPC_URL),
   ) as Counter;
 
-  const MMCounter = useWrappedContractPrimary(_Counter.address, _Counter.abi);
+  const MMCounter = new Contract(_Counter.address, _Counter.abi, provider);
 
   const fetchCount = async () => {
     const _count = await CounterContract.count(address);
@@ -47,17 +47,35 @@ const IncrementNFTCounter = (): ReactElement => {
 
   const registerMM = async () => {
     setLoading(true);
-    const result = await MMCounter.increment(
-      input.contractAddress,
-      input.tokenId,
-      address,
+    const data = MMCounter.interface.encodeFunctionData('increment');
+
+    const result = await signMetaTxRequest(
+      provider,
+      parseInt(process.env.CHAIN_ID, 10),
+      {
+        to: _Counter.address,
+        from: address,
+        authorizer: address, // address that owns NFT
+        nftContract: input.contractAddress,
+        nftChainId: '1',
+        nftTokenId: input.tokenId.toString(),
+        targetChainId: '80001',
+        data,
+      },
+      new Contract(
+        EssentialForwarderContract.address,
+        EssentialForwarderContract.abi,
+        new JsonRpcProvider(process.env.RPC_URL),
+      ),
     ).catch(() => {
       setLoading(false);
     });
+    console.warn(result);
 
     if (!result) return;
+    setLoading(false);
 
-    await fetch(process.env.AUTOTASK_URI, {
+    await fetch('/proxyAutotask', {
       method: 'POST',
       body: JSON.stringify(result),
       headers: { 'Content-Type': 'application/json' },
@@ -70,12 +88,16 @@ const IncrementNFTCounter = (): ReactElement => {
   const register = async () => {
     setLoading(true);
 
+    const signer = new EssentialSigner(
+      burner.address,
+      provider as Web3Provider,
+      burner,
+    );
+
     const essentialCounter = new Contract(
       _Counter.address,
       _Counter.abi,
-      // constructor should take main provider and optional burner
-      // would allow removing authorizer from customData
-      new EssentialSigner(burner.address, provider as Web3Provider, burner),
+      signer,
     ) as Counter;
 
     // Perhaps we should provide our own typed overrides?
@@ -90,7 +112,7 @@ const IncrementNFTCounter = (): ReactElement => {
         nftTokenId: input.tokenId.toString(),
       },
     });
-
+    console.warn(hash);
     if (hash) {
       setLoading(false);
 
