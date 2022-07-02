@@ -12,7 +12,7 @@ import SwitchToPolygonButton from '../SwitchToPolygonButton';
 
 const AuthenticateBurnerWallet = (): ReactElement => {
   const { hedgehog } = useContext(HedgehogContext);
-  const { address, network, notify } = useContext(Web3Context);
+  const { address, network, notify, provider } = useContext(Web3Context);
   const [loading, setLoading] = useState(true);
 
   const [authorized, setAuthorized] = useState(false);
@@ -50,6 +50,7 @@ const AuthenticateBurnerWallet = (): ReactElement => {
   }, [address]);
 
   const createSession = async () => {
+    PS.connect(provider);
     const session = await PS.createSession(
       hedgehog.getWallet().getAddressString(),
       BigNumber.from(100_000_000),
