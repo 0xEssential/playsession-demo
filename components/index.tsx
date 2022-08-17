@@ -24,9 +24,8 @@ const Tabs = (props) => {
   );
 };
 
-const Pill = (props) => {
-  const styles = props.text === 'authenticated' ? 'pill green' : 'pill red';
-  return <div className={styles}>{props.text}</div>;
+const Pill = ({ text, color}) => {
+  return <div className={`pill ${color}`}>{text}</div>;
 };
 
 const Spinner = (props) => {
@@ -41,6 +40,8 @@ const Button = (props) => {
   let styles = 'button';
   if (props.fullWidth) styles += ' fullWidth';
   if (props.loading) styles += ' loading';
+  if (props.className) styles += ` ${props.className}`;
+
   return (
     <div
       onClick={() => (props.loading ? {} : props.onClick())}

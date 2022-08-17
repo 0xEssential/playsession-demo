@@ -1,147 +1,94 @@
+import { Web3Provider } from '@ethersproject/providers';
+import { NotificationType } from 'bnc-notify';
 import type { NextPage } from 'next';
-import React, { useContext, useState } from 'react';
+// import Image from 'next/image';
+import { useRouter } from 'next/router';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
-import { Button, Link, Pill, Tabs } from '../components';
-import AuthenticateBurnerWallet from '../components/AuthenticateBurnerWallet';
-import IncrementNFTCounter from '../components/IncrementNFTCounter';
-import { HedgehogContext, messages } from '../contexts/hedgehogContext';
+import { HedgehogContext } from '~contexts/hedgehogContext';
+import { addEtherscan } from '~utils/network';
+
+import { Button } from '../components';
+import NFightBurnerAuth from '../components/NFightBurnerAuth';
 import { Web3Context } from '../contexts/web3context';
 
-// Initialize Firebase
+const notificationObject = {
+  eventCode: `delegate-address`,
+  type: 'pending' as NotificationType,
+  message: 'Submitting your meta-transaction',
+};
+
+export type EssentialEvent = {
+  key: 'relayed' | 'submitted' | 'succeeded' | 'replaced' | 'failed';
+  id: string;
+  hash?: string;
+};
+
 const Home: NextPage = () => {
-  const { onboard, address, provider } = useContext(Web3Context);
-  const {
-    hedgehog,
-    signedIn,
-    handleSignUp,
-    hedgehogLoading,
-    handleLogin,
-    logout,
-    errorMessage,
-  } = useContext(HedgehogContext);
+  const { authorized } = useContext(HedgehogContext);
+  const { onboard, address, provider, notify } = useContext(Web3Context);
+  const router = useRouter();
+  const [key, setKey] = useState<number>(new Date().getTime());
+  const interval = useRef(null);
+  const notification = useRef(null);
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
-  const [activeTab, setActiveTab] = useState(0);
+  const onEssentialEvent = (event: EssentialEvent) => {
+    const { key, id: _id, hash } = event;
+    switch (key) {
+      case 'relayed':
+        const _notification = notify.notification(notificationObject);
+        notification.current = _notification;
+        break;
+      case 'submitted':
+        const { emitter } = notify.hash(hash);
 
-  const changeTab = (i) => {
-    setActiveTab(i);
+        emitter.on('all', () => addEtherscan({ hash }));
+
+        emitter.on('txSent', () => {
+          notification?.current?.dismiss();
+          addEtherscan({ hash });
+        });
+
+        emitter.on('txConfirmed', () => {
+          addEtherscan({ hash });
+          interval.current = setInterval(() => {
+            setKey(new Date().getTime());
+          }, 1000);
+        });
+        break;
+      case 'succeeded':
+        break;
+      case 'failed':
+        break;
+      default:
+        break;
+    }
   };
 
+  useEffect(() => {
+    if (authorized && interval.current) clearInterval(interval.current);
+    return () => clearInterval(interval?.current);
+  }, [authorized]);
+
   return (
-    <div className="app">
-      {signedIn ? (
-        <div className="message">
-          <Pill text="authenticated" />
-          <h1>{messages.signedIn.header}</h1>
-          <p>{messages.signedIn.body}</p>
-          <p>Your Burner address is:</p>
-          <p className="address">{hedgehog.getWallet().getAddressString()}</p>
-          <Button loading={hedgehogLoading} onClick={logout} text="Log Out" />
+    <div className="app" key={key}>
+      {/* <Image src={'/logo.svg'} width="400" height="200" /> */}
+      <>
+        <h2>Burner Wallet Protocol</h2>
+        <h4>Link your wallet to a Burner for smooth gameplay</h4>
 
-          {address ? (
-            <>
-              <p>Your Primary address is:</p>
-              <p className="address">{address}</p>
-              {provider && <AuthenticateBurnerWallet />}
-              <IncrementNFTCounter />
-            </>
-          ) : (
-            <Button
-              loading={false}
-              onClick={async () => {
-                await onboard?.walletSelect();
-                await onboard?.walletCheck();
-              }}
-              text="Connect Primary Wallet"
-            />
-          )}
-        </div>
-      ) : (
-        <>
-          <Tabs
-            tabs={['Create Account', 'Log In']}
-            activeTab={activeTab}
-            setActiveTab={changeTab}
-          >
-            {/* Create Account Tab */}
-            <div className="form">
-              <div className="fields">
-                <input
-                  className={errorMessage && !username ? 'error' : null}
-                  placeholder="Username"
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-                <input
-                  className={errorMessage ? 'error' : null}
-                  placeholder="Password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  type="password"
-                />
-                <div>
-                  <input
-                    className={errorMessage ? 'error' : null}
-                    placeholder="Confirm Password"
-                    onChange={(e) => setPasswordConfirmation(e.target.value)}
-                    type="password"
-                  />
-                  <p className="error">{errorMessage}</p>
-                </div>
-              </div>
-              <div className="buttons">
-                <Button
-                  onClick={() =>
-                    handleSignUp({ username, password, passwordConfirmation })
-                  }
-                  fullWidth
-                  loading={hedgehogLoading}
-                  text="Create My Account"
-                />
-                <Link
-                  onClick={() => changeTab(1)}
-                  text="I already have an account."
-                />
-              </div>
-            </div>
-
-            {/* Log In Tab */}
-            <div className="form">
-              <div className="fields">
-                <input
-                  placeholder="Username"
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-                <div>
-                  <input
-                    className={errorMessage ? 'error' : null}
-                    placeholder="Password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password"
-                  />
-                  <p className="error">{errorMessage}</p>
-                </div>
-              </div>
-              <div className="buttons">
-                <Button
-                  onClick={() => handleLogin({ username, password })}
-                  fullWidth
-                  loading={hedgehogLoading}
-                  text="Log In"
-                />
-                <Link onClick={() => changeTab(0)} text="Create Account" />
-              </div>
-            </div>
-          </Tabs>
-
-          <div className="message unauthenticated">
-            <Pill text="unauthenticated" />
-            <h1>{messages.signedOut.header}</h1>
-            <p>{messages.signedOut.body}</p>
-            <p>{messages.signedOut.instructions}</p>
-          </div>
-        </>
-      )}
+        <NFightBurnerAuth
+          ButtonComponent={Button}
+          onReady={() => router.push('/count')}
+          provider={provider as Web3Provider}
+          address={address}
+          onEvent={onEssentialEvent}
+          onConnectWallet={async () => {
+            await onboard?.walletSelect();
+            await onboard?.walletCheck();
+          }}
+        />
+      </>
     </div>
   );
 };

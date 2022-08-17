@@ -1,9 +1,45 @@
+@font-face {
+  font-family: "NBArchitekt";
+  src: url('/fonts/NBArchitektStd-Regular.otf');
+  font-weight: normal;
+  font-style: normal;
+  }
+  
+  /* @font-face {
+  font-family: "Rubik";
+  src: url('../fonts/rubik/Rubik-Bold.ttf');
+  font-weight: bold;
+  font-style: normal;
+  }
+  
+  @font-face {
+  font-family: "Rubik";
+  src: url('../fonts/rubik/Rubik-Italic.ttf');
+  font-weight: normal;
+  font-style: italic;
+  }
+   */
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: NBArchitekt, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+body:before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 510;
+  background-image: url(/noise.png);
+  background-size: cover;
+  pointer-events: none;
+  opacity: .25;
 }
 
 a {
@@ -22,6 +58,8 @@ a {
 
 .tabs {
   width: 360px;
+  border: 1px solid #404040;
+  background-color: #c2c2c2;
 }
 
 .tabs > .headers {
@@ -32,8 +70,6 @@ a {
 .tabs > .headers > .tab {
   width: 50%;
   height: 50px;
-  background-color: #e7e6eb;
-  border-radius: 16px 16px 0px 0px;
   color: #484459;
   font-size: 16px;
   font-weight: bold;
@@ -49,11 +85,8 @@ a {
   background-color: #ffffff;
 }
 
+
 .tabs > .content {
-  height: 215px;
-  border-radius: 0px 0px 8px 8px;
-  background-color: #ffffff;
-  box-shadow: 0 16px 20px 0 rgba(232, 228, 234, 0.5);
   padding: 30px 32px;
 }
 
@@ -88,8 +121,9 @@ a {
 .button {
   cursor: pointer;
   height: 40px;
-  border-radius: 4px;
-  background-color: #9070b7;
+  border-radius: 2px;
+  border: 1px solid white;
+  background-color: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -99,9 +133,15 @@ a {
   font-size: 16px;
   font-weight: bold;
   letter-spacing: 0.1px;
-  margin: 40px 0px;
+  margin: 8px 0px 0px;
   position: relative;
   user-select: none;
+}
+
+.button.alt {
+  border: 1px solid #404040;
+  color:  #404040;
+  transition: all 0.07s ease-in-out;
 }
 
 .tabs .button {
@@ -114,28 +154,28 @@ a {
 }
 
 .button.loading {
-  background-color: #c2c2c2;
+  background-color: #2d2d2d;;
   cursor: default;
 }
 
 .button:hover {
-  transform: scale(1.04);
-  background-color: #a782d4;
+  background-color: #2d2d2d;
+  color: #ffffff;
 }
 
 .button.loading:hover {
   transform: none;
-  background-color: #c2c2c2;
+
 }
 
 .button:active {
   transform: scale(1);
-  background-color: #6e568c;
+  background-color: #2d2d2d;;
+
 }
 
 .button.loading:active {
   transform: none;
-  background-color: #c2c2c2;
 }
 
 /* Spinner */
@@ -194,8 +234,8 @@ h1 {
 
 p {
   margin: 20px 0px 0px 0px;
-  color: #8d7d9d;
-  font-size: 18px;
+  color: #404040;
+  font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.37px;
   line-height: 27px;
@@ -212,16 +252,16 @@ p.error {
 
 input {
   width: 100%;
-  height: 32px;
-  border: 1px solid #c2c2c2;
+  height: 48px;
+  border: 1px solid white;
   outline: none;
-  border-radius: 4px;
-
-  color: #000000;
-  font-size: 12px;
+  border-radius: 1px;
+  background-color: transparent;
+  color: white;
+  font-size: 16px;
   font-weight: 500;
-  line-height: 16px;
-  padding: 0px 8px;
+  line-height: 24px;
+  padding: 0px 12px;
 
   transition: all 0.07s ease-in-out;
 }
@@ -231,7 +271,7 @@ input:hover {
 }
 
 input:focus {
-  border: 1px solid #7e1ccc;
+  /* border: 1px solid #7e1ccc; */
 }
 
 input.error {
@@ -239,7 +279,7 @@ input.error {
 }
 
 input::placeholder {
-  color: #c2c2c2;
+  color: #5c5c5c;
 }
 
 /* APP */
@@ -248,17 +288,15 @@ input::placeholder {
   margin: 0 auto;
   max-width: 1200px;
   min-height: 440px;
-  border-radius: 16px;
   padding: 24px;
-  background-color: #f2f2f4;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
 }
 
 .app > div {
-  padding: 24px;
+  /* padding: 24px; */
 }
 
 @media only screen and (max-width: 600px) {
@@ -268,18 +306,30 @@ input::placeholder {
 }
 
 .message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  padding: 24px;
+  border: 1px solid #404040;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 32px;
   text-align: center;
+}
 
-  max-width: 588px;
+.message > div {
+  background-color: #c2c2c2;
+  padding: 18px 26px;
+}
+
+.continue {
+  background-color: 'unset';
+  padding: 0;
+  text-align: center;
+  width: 80%;
 }
 
 p.address {
   margin: 0;
   font-size: 12px;
+  font-weight: bold;
 }
 
 .message.unauthenticated {
@@ -327,3 +377,16 @@ p.address {
   justify-content: space-between;
   justify-self: flex-end;
 }
+
+.register {
+  padding: 24px;
+  border: 1px solid #404040;
+  display: flex;
+  flex-direction: column;
+}
+
+.register > div {
+  background-color: #c2c2c2;
+  padding: 18px 26px;
+}
+

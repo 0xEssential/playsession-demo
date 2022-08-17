@@ -48,3 +48,7 @@ export function addEtherscan(transaction: Record<string, string>): {
     link: `${process.env.ETHERSCAN_ROOT}/tx/${transaction.hash}`,
   };
 }
+
+export function ipfs(url: string): string {
+  return url.replace('ipfs://', 'https://cloudflare-ipfs.com/ipfs/');
+}

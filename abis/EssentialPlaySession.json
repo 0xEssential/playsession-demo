@@ -1,0 +1,394 @@
+{
+  "address": "0x3E4404d874fa73659cCfFc21Ac4839EcA21F0b4c",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "trustedForwarder",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "authorized",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "length",
+          "type": "uint256"
+        }
+      ],
+      "name": "Session",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "authorized",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "length",
+          "type": "uint256"
+        }
+      ],
+      "name": "createSession",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "authorized",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "length",
+          "type": "uint256"
+        }
+      ],
+      "name": "createSignedSession",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "authorizer",
+          "type": "address"
+        }
+      ],
+      "name": "getSession",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "authorized",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IForwardRequest.PlaySession",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "invalidateSession",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "forwarder",
+          "type": "address"
+        }
+      ],
+      "name": "isTrustedForwarder",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "permissionlessSessions",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "trustedForwarder",
+          "type": "address"
+        }
+      ],
+      "name": "setTrustedForwarder",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "authorizer",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "nftContract",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nftTokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nftChainId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "targetChainId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "gas",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes",
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "internalType": "struct IForwardRequest.ERC721ForwardRequest",
+          "name": "req",
+          "type": "tuple"
+        }
+      ],
+      "name": "verifyAuthorization",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x938742cbdd4847c7f607714c5c2a07c081713c9636f256b755706ed3716502dc",
+  "receipt": {
+    "to": null,
+    "from": "0x2cE6BD653220436eB8f35E146B0Dd1a6013E97a7",
+    "contractAddress": "0x3E4404d874fa73659cCfFc21Ac4839EcA21F0b4c",
+    "transactionIndex": 63,
+    "gasUsed": "471005",
+    "logsBloom": "0x00000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000100800000000000000000000100000000000000000000000000000002000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000010000000004000000000000000000001000000000000000000000000000000100000000020000000000002000000000000000000000000000000000000000000000000100000",
+    "blockHash": "0x4592d8ba617411d47ba8f194dfd1f4cc0e11d979de3fa1cfb932003e79071266",
+    "transactionHash": "0x938742cbdd4847c7f607714c5c2a07c081713c9636f256b755706ed3716502dc",
+    "logs": [
+      {
+        "transactionIndex": 63,
+        "blockNumber": 28125492,
+        "transactionHash": "0x938742cbdd4847c7f607714c5c2a07c081713c9636f256b755706ed3716502dc",
+        "address": "0x0000000000000000000000000000000000001010",
+        "topics": [
+          "0x4dfe1bbbcf077ddc3e01291eea2d5c70c2b422b415d95645b9adcfd678cb1d63",
+          "0x0000000000000000000000000000000000000000000000000000000000001010",
+          "0x0000000000000000000000002ce6bd653220436eb8f35e146b0dd1a6013e97a7",
+          "0x000000000000000000000000ec20607aa654d823dd01beb8780a44863c57ed07"
+        ],
+        "data": "0x0000000000000000000000000000000000000000000000000127cfe948ccfb85000000000000000000000000000000000000000000000008160465f2827ad56300000000000000000000000000000000000000000000047a7358a83c5010bc5700000000000000000000000000000000000000000000000814dc960939add9de00000000000000000000000000000000000000000000047a7480782598ddb7dc",
+        "logIndex": 229,
+        "blockHash": "0x4592d8ba617411d47ba8f194dfd1f4cc0e11d979de3fa1cfb932003e79071266"
+      }
+    ],
+    "blockNumber": 28125492,
+    "cumulativeGasUsed": "8913455",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x9bbb4217115B7296630183Bb23703DEC93E8edCf"
+  ],
+  "solcInputHash": "96f21e780117b2dc083127a8074f7f25",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"trustedForwarder\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"authorized\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"length\",\"type\":\"uint256\"}],\"name\":\"Session\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"authorized\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"length\",\"type\":\"uint256\"}],\"name\":\"createSession\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"authorized\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"length\",\"type\":\"uint256\"}],\"name\":\"createSignedSession\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"authorizer\",\"type\":\"address\"}],\"name\":\"getSession\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"authorized\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"expiresAt\",\"type\":\"uint256\"}],\"internalType\":\"struct IForwardRequest.PlaySession\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"invalidateSession\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"forwarder\",\"type\":\"address\"}],\"name\":\"isTrustedForwarder\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"permissionlessSessions\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"trustedForwarder\",\"type\":\"address\"}],\"name\":\"setTrustedForwarder\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"authorizer\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"nftContract\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nftTokenId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nftChainId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"targetChainId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"gas\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"struct IForwardRequest.ERC721ForwardRequest\",\"name\":\"req\",\"type\":\"tuple\"}],\"name\":\"verifyAuthorization\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"createSession(address,uint256)\":{\"notice\":\"Allow `authorized` to use your NFTs in a game for `length` seconds. Your NFTs         will not be held in custody or approved for transfer.\"},\"createSignedSession(address,uint256)\":{\"notice\":\"Allow `authorized` to use your NFTs in a game for `length` seconds through a signed message from the primary EOA\"},\"getSession(address)\":{\"notice\":\"Get current session for Primary EOA\"},\"invalidateSession()\":{\"notice\":\"Stop allowing your current authorized burner address to use your NFTs.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"@0xessential/contracts/fwd/EssentialPlaySession.sol\":\"EssentialPlaySession\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@0xessential/contracts/fwd/EssentialERC2771Context.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.9;\\n\\nimport \\\"@openzeppelin/contracts/utils/Context.sol\\\";\\nimport \\\"./IForwardRequest.sol\\\";\\n\\n/**\\n * @dev Context variant with ERC2771 support.\\n */\\nabstract contract EssentialERC2771Context is Context {\\n    address private _trustedForwarder;\\n    address public owner;\\n\\n    modifier onlyOwner() {\\n        require(msg.sender == owner, \\\"403\\\");\\n        _;\\n    }\\n\\n    modifier onlyForwarder() {\\n        require(isTrustedForwarder(msg.sender), \\\"Counter:429\\\");\\n        _;\\n    }\\n\\n    constructor(address trustedForwarder) {\\n        owner = msg.sender;\\n        _trustedForwarder = trustedForwarder;\\n    }\\n\\n    function setTrustedForwarder(address trustedForwarder) external onlyOwner {\\n        _trustedForwarder = trustedForwarder;\\n    }\\n\\n    function isTrustedForwarder(address forwarder) public view virtual returns (bool) {\\n        return forwarder == _trustedForwarder;\\n    }\\n\\n    function _msgSender() internal view virtual override returns (address sender) {\\n        if (isTrustedForwarder(msg.sender)) {\\n            // The assembly code is more direct than the Solidity version using `abi.decode`.\\n            assembly {\\n                sender := shr(0x60, calldataload(sub(calldatasize(), 20)))\\n            }\\n        } else {\\n            return super._msgSender();\\n        }\\n    }\\n\\n    function _msgData() internal view virtual override returns (bytes calldata) {\\n        if (isTrustedForwarder(msg.sender)) {\\n            return msg.data[:msg.data.length - 72];\\n        } else {\\n            return super._msgData();\\n        }\\n    }\\n\\n    function _msgNFT() internal view returns (IForwardRequest.NFT memory) {\\n        uint256 tokenId;\\n        address contractAddress;\\n        if (isTrustedForwarder(msg.sender)) {\\n            assembly {\\n                contractAddress := shr(0x60, calldataload(sub(calldatasize(), 40)))\\n                tokenId := calldataload(sub(calldatasize(), 72))\\n            }\\n        }\\n\\n        return IForwardRequest.NFT({contractAddress: contractAddress, tokenId: tokenId});\\n    }\\n}\\n\",\"keccak256\":\"0x26b760608889428864ff5d1d2d827a8c77caa70a75b033d15c6eb0b5d6b3d183\",\"license\":\"MIT\"},\"@0xessential/contracts/fwd/EssentialPlaySession.sol\":{\"content\":\"//SPDX-License-Identifier: Unlicense\\npragma solidity ^0.8.9;\\n\\nimport \\\"./EssentialERC2771Context.sol\\\";\\nimport \\\"./IForwardRequest.sol\\\";\\n\\ncontract EssentialPlaySession is EssentialERC2771Context {\\n    event Session(address indexed owner, address indexed authorized, uint256 indexed length);\\n\\n    mapping(address => IForwardRequest.PlaySession) internal _sessions;\\n    bool public permissionlessSessions;\\n\\n    constructor(address trustedForwarder) EssentialERC2771Context(trustedForwarder) {}\\n\\n    /// @notice Get current session for Primary EOA\\n    function getSession(address authorizer) external view returns (IForwardRequest.PlaySession memory) {\\n        return _sessions[authorizer];\\n    }\\n\\n    /// @notice Allow `authorized` to use your NFTs in a game for `length` seconds. Your NFTs\\n    ///         will not be held in custody or approved for transfer.\\n    function createSession(address authorized, uint256 length) external {\\n        _createSession(authorized, length, tx.origin);\\n    }\\n\\n    /// @notice Allow `authorized` to use your NFTs in a game for `length` seconds through a\\n    /// signed message from the primary EOA\\n    function createSignedSession(address authorized, uint256 length) external onlyForwarder {\\n        _createSession(authorized, length, _msgSender());\\n    }\\n\\n    /// @notice Stop allowing your current authorized burner address to use your NFTs.\\n    function invalidateSession() external {\\n        this.createSession(_msgSender(), 0);\\n    }\\n\\n    function verifyAuthorization(IForwardRequest.ERC721ForwardRequest memory req) external view returns (bool) {\\n        return\\n            _sessions[req.authorizer].authorized == req.from && _sessions[req.authorizer].expiresAt >= block.timestamp;\\n    }\\n\\n    function _createSession(\\n        address authorized,\\n        uint256 length,\\n        address authorizer\\n    ) internal {\\n        _sessions[authorizer] = IForwardRequest.PlaySession({\\n            authorized: authorized,\\n            expiresAt: block.timestamp + length\\n        });\\n\\n        emit Session(authorizer, authorized, length);\\n    }\\n}\\n\",\"keccak256\":\"0x7d8bd1bfbb0a818051d608354dca392963c755f60ab6b447c571299a2f022912\",\"license\":\"Unlicense\"},\"@0xessential/contracts/fwd/IForwardRequest.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.9;\\n\\ninterface IForwardRequest {\\n    struct ERC721ForwardRequest {\\n        address from; // Externally-owned account (EOA) signing the request.\\n        address authorizer; // Externally-owned account (EOA) that authorized from account in PlaySession.\\n        address to; // Destination address, normally a smart contract for an nFight game.\\n        address nftContract; // The address of the NFT contract for the token being used.\\n        uint256 nftTokenId; // The tokenId of the NFT being used\\n        uint256 nftChainId; // The chainId of the NFT neing used\\n        uint256 targetChainId; // The chainId where the Forwarder and implementation contract are deployed.\\n        uint256 value; // Amount of ether to transfer to the destination.\\n        uint256 gas; // Amount of gas limit to set for the execution.\\n        uint256 nonce; // On-chain tracked nonce of a transaction.\\n        bytes data; // (Call)data to be sent to the destination.\\n    }\\n\\n    struct MetaTransaction {\\n        uint256 nonce;\\n        address from;\\n        bytes functionSignature;\\n    }\\n\\n    struct PlaySession {\\n        address authorized; // Burner EOA that is authorized to play with NFTs by owner EOA.\\n        uint256 expiresAt; // block timestamp when the session is invalidated.\\n    }\\n\\n    struct NFT {\\n        address contractAddress;\\n        uint256 tokenId;\\n    }\\n}\\n\",\"keccak256\":\"0x0d4b9cc714fa1d70ea8424c1503dd007902f23ef320d91bd76ba682f78da8a3f\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/Context.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts v4.4.1 (utils/Context.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Provides information about the current execution context, including the\\n * sender of the transaction and its data. While these are generally available\\n * via msg.sender and msg.data, they should not be accessed in such a direct\\n * manner, since when dealing with meta-transactions the account sending and\\n * paying for execution may not be the actual sender (as far as an application\\n * is concerned).\\n *\\n * This contract is only required for intermediate, library-like contracts.\\n */\\nabstract contract Context {\\n    function _msgSender() internal view virtual returns (address) {\\n        return msg.sender;\\n    }\\n\\n    function _msgData() internal view virtual returns (bytes calldata) {\\n        return msg.data;\\n    }\\n}\\n\",\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5060405161075738038061075783398101604081905261002f91610062565b600180546001600160a01b03199081163317909155600080546001600160a01b0390931692909116919091179055610092565b60006020828403121561007457600080fd5b81516001600160a01b038116811461008b57600080fd5b9392505050565b6106b6806100a16000396000f3fe608060405234801561001057600080fd5b50600436106100935760003560e01c80638f8bc9c7116100665780638f8bc9c71461018a578063be0fb87e14610197578063cd502eb71461019f578063da742228146101b2578063ffb703ee146101c557600080fd5b8063248d0ad114610098578063572b6c05146100ad5780638c8e13b9146100e45780638da5cb5b1461015f575b600080fd5b6100ab6100a636600461044b565b6101d8565b005b6100cf6100bb366004610475565b6000546001600160a01b0391821691161490565b60405190151581526020015b60405180910390f35b61013b6100f2366004610475565b604080518082018252600080825260209182018190526001600160a01b039384168152600282528290208251808401909352805490931682526001909201549181019190915290565b6040805182516001600160a01b0316815260209283015192810192909252016100db565b600154610172906001600160a01b031681565b6040516001600160a01b0390911681526020016100db565b6003546100cf9060ff1681565b6100ab61023b565b6100cf6101ad366004610564565b6102ab565b6100ab6101c0366004610475565b610306565b6100ab6101d336600461044b565b610368565b6000546001600160a01b031633146102255760405162461bcd60e51b815260206004820152600b60248201526a436f756e7465723a34323960a81b60448201526064015b60405180910390fd5b6102378282610232610373565b610399565b5050565b3063ffb703ee610249610373565b6040516001600160e01b031960e084901b1681526001600160a01b03909116600482015260006024820152604401600060405180830381600087803b15801561029157600080fd5b505af11580156102a5573d6000803e3d6000fd5b50505050565b80516020808301516001600160a01b0390811660009081526002909252604082205491928116911614801561030057506020808301516001600160a01b03166000908152600290915260409020600101544211155b92915050565b6001546001600160a01b031633146103465760405162461bcd60e51b815260206004820152600360248201526234303360e81b604482015260640161021c565b600080546001600160a01b0319166001600160a01b0392909216919091179055565b610237828232610399565b600080546001600160a01b0316331415610394575060131936013560601c90565b503390565b6040518060400160405280846001600160a01b0316815260200183426103bf919061065a565b90526001600160a01b038281166000818152600260209081526040808320865181546001600160a01b031916908716178155959091015160019095019490945592518593928716927f1170e4b3e143a792ce7a7af268ecfe7d7b0574438d8040eb89c2bf5b7e6e15d891a4505050565b80356001600160a01b038116811461044657600080fd5b919050565b6000806040838503121561045e57600080fd5b6104678361042f565b946020939093013593505050565b60006020828403121561048757600080fd5b6104908261042f565b9392505050565b634e487b7160e01b600052604160045260246000fd5b604051610160810167ffffffffffffffff811182821017156104d1576104d1610497565b60405290565b600082601f8301126104e857600080fd5b813567ffffffffffffffff8082111561050357610503610497565b604051601f8301601f19908116603f0116810190828211818310171561052b5761052b610497565b8160405283815286602085880101111561054457600080fd5b836020870160208301376000602085830101528094505050505092915050565b60006020828403121561057657600080fd5b813567ffffffffffffffff8082111561058e57600080fd5b9083019061016082860312156105a357600080fd5b6105ab6104ad565b6105b48361042f565b81526105c26020840161042f565b60208201526105d36040840161042f565b60408201526105e46060840161042f565b60608201526080830135608082015260a083013560a082015260c083013560c082015260e083013560e0820152610100808401358183015250610120808401358183015250610140808401358381111561063d57600080fd5b610649888287016104d7565b918301919091525095945050505050565b6000821982111561067b57634e487b7160e01b600052601160045260246000fd5b50019056fea26469706673582212203b787f46af411826cb836565b572a880ecb62c97cc2da7795dcaadd0aa01ee5264736f6c63430008090033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100935760003560e01c80638f8bc9c7116100665780638f8bc9c71461018a578063be0fb87e14610197578063cd502eb71461019f578063da742228146101b2578063ffb703ee146101c557600080fd5b8063248d0ad114610098578063572b6c05146100ad5780638c8e13b9146100e45780638da5cb5b1461015f575b600080fd5b6100ab6100a636600461044b565b6101d8565b005b6100cf6100bb366004610475565b6000546001600160a01b0391821691161490565b60405190151581526020015b60405180910390f35b61013b6100f2366004610475565b604080518082018252600080825260209182018190526001600160a01b039384168152600282528290208251808401909352805490931682526001909201549181019190915290565b6040805182516001600160a01b0316815260209283015192810192909252016100db565b600154610172906001600160a01b031681565b6040516001600160a01b0390911681526020016100db565b6003546100cf9060ff1681565b6100ab61023b565b6100cf6101ad366004610564565b6102ab565b6100ab6101c0366004610475565b610306565b6100ab6101d336600461044b565b610368565b6000546001600160a01b031633146102255760405162461bcd60e51b815260206004820152600b60248201526a436f756e7465723a34323960a81b60448201526064015b60405180910390fd5b6102378282610232610373565b610399565b5050565b3063ffb703ee610249610373565b6040516001600160e01b031960e084901b1681526001600160a01b03909116600482015260006024820152604401600060405180830381600087803b15801561029157600080fd5b505af11580156102a5573d6000803e3d6000fd5b50505050565b80516020808301516001600160a01b0390811660009081526002909252604082205491928116911614801561030057506020808301516001600160a01b03166000908152600290915260409020600101544211155b92915050565b6001546001600160a01b031633146103465760405162461bcd60e51b815260206004820152600360248201526234303360e81b604482015260640161021c565b600080546001600160a01b0319166001600160a01b0392909216919091179055565b610237828232610399565b600080546001600160a01b0316331415610394575060131936013560601c90565b503390565b6040518060400160405280846001600160a01b0316815260200183426103bf919061065a565b90526001600160a01b038281166000818152600260209081526040808320865181546001600160a01b031916908716178155959091015160019095019490945592518593928716927f1170e4b3e143a792ce7a7af268ecfe7d7b0574438d8040eb89c2bf5b7e6e15d891a4505050565b80356001600160a01b038116811461044657600080fd5b919050565b6000806040838503121561045e57600080fd5b6104678361042f565b946020939093013593505050565b60006020828403121561048757600080fd5b6104908261042f565b9392505050565b634e487b7160e01b600052604160045260246000fd5b604051610160810167ffffffffffffffff811182821017156104d1576104d1610497565b60405290565b600082601f8301126104e857600080fd5b813567ffffffffffffffff8082111561050357610503610497565b604051601f8301601f19908116603f0116810190828211818310171561052b5761052b610497565b8160405283815286602085880101111561054457600080fd5b836020870160208301376000602085830101528094505050505092915050565b60006020828403121561057657600080fd5b813567ffffffffffffffff8082111561058e57600080fd5b9083019061016082860312156105a357600080fd5b6105ab6104ad565b6105b48361042f565b81526105c26020840161042f565b60208201526105d36040840161042f565b60408201526105e46060840161042f565b60608201526080830135608082015260a083013560a082015260c083013560c082015260e083013560e0820152610100808401358183015250610120808401358183015250610140808401358381111561063d57600080fd5b610649888287016104d7565b918301919091525095945050505050565b6000821982111561067b57634e487b7160e01b600052601160045260246000fd5b50019056fea26469706673582212203b787f46af411826cb836565b572a880ecb62c97cc2da7795dcaadd0aa01ee5264736f6c63430008090033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "createSession(address,uint256)": {
+        "notice": "Allow `authorized` to use your NFTs in a game for `length` seconds. Your NFTs         will not be held in custody or approved for transfer."
+      },
+      "createSignedSession(address,uint256)": {
+        "notice": "Allow `authorized` to use your NFTs in a game for `length` seconds through a signed message from the primary EOA"
+      },
+      "getSession(address)": {
+        "notice": "Get current session for Primary EOA"
+      },
+      "invalidateSession()": {
+        "notice": "Stop allowing your current authorized burner address to use your NFTs."
+      }
+    },
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 156,
+        "contract": "@0xessential/contracts/fwd/EssentialPlaySession.sol:EssentialPlaySession",
+        "label": "_trustedForwarder",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 158,
+        "contract": "@0xessential/contracts/fwd/EssentialPlaySession.sol:EssentialPlaySession",
+        "label": "owner",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_address"
+      },
+      {
+        "astId": 830,
+        "contract": "@0xessential/contracts/fwd/EssentialPlaySession.sol:EssentialPlaySession",
+        "label": "_sessions",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_mapping(t_address,t_struct(PlaySession)1023_storage)"
+      },
+      {
+        "astId": 832,
+        "contract": "@0xessential/contracts/fwd/EssentialPlaySession.sol:EssentialPlaySession",
+        "label": "permissionlessSessions",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_bool"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_address,t_struct(PlaySession)1023_storage)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => struct IForwardRequest.PlaySession)",
+        "numberOfBytes": "32",
+        "value": "t_struct(PlaySession)1023_storage"
+      },
+      "t_struct(PlaySession)1023_storage": {
+        "encoding": "inplace",
+        "label": "struct IForwardRequest.PlaySession",
+        "members": [
+          {
+            "astId": 1020,
+            "contract": "@0xessential/contracts/fwd/EssentialPlaySession.sol:EssentialPlaySession",
+            "label": "authorized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address"
+          },
+          {
+            "astId": 1022,
+            "contract": "@0xessential/contracts/fwd/EssentialPlaySession.sol:EssentialPlaySession",
+            "label": "expiresAt",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          }
+        ],
+        "numberOfBytes": "64"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

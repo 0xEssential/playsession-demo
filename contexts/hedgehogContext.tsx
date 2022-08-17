@@ -1,6 +1,14 @@
 import { Hedgehog } from '@audius/hedgehog';
+import { getAddress } from '@ethersproject/address';
+import { Contract } from '@ethersproject/contracts';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import axios from 'axios';
+import applyCaseMiddleware from 'axios-case-converter';
 import React, { createContext, ReactElement, useEffect, useState } from 'react';
+
+import EssentialForwarderContract from '~abis/EssentialForwarder.json';
+
+const BASE_URL = 'https://burner-auth-api.herokuapp.com/';
 
 export const messages = {
   signedIn: {
@@ -18,9 +26,17 @@ export const messages = {
   mismatched: `The passwords you entered don't match.`,
 };
 
+const client = applyCaseMiddleware(
+  axios.create({
+    baseURL: BASE_URL,
+    withCredentials: true,
+    headers: { 'API-KEY': 'YfilHxvyWffnQhAEf6Leng' },
+  }),
+);
+
 const makeRequestToService = async (axiosRequestObj) => {
   try {
-    const resp = await axios(axiosRequestObj);
+    const resp = await client(axiosRequestObj);
     if (resp.status === 200) {
       return resp.data;
     } else {
@@ -41,6 +57,7 @@ const makeRequestToService = async (axiosRequestObj) => {
 };
 
 type HedgehogContextValues = {
+  authorized: boolean;
   hedgehog?: any;
   signedIn: boolean;
   hedgehogLoading: boolean;
@@ -62,23 +79,27 @@ type HedgehogContextValues = {
     password: string;
   }) => Promise<void>;
   logout?: () => void;
+  updateAuthorization?: (address: string) => Promise<void>;
 };
 
 const defaultValue: HedgehogContextValues = {
+  authorized: false,
   signedIn: false,
   hedgehogLoading: false,
 };
 
 const HedgehogContext = createContext(defaultValue);
 
-const AUTH_TABLE = '/Authentications';
-const USER_TABLE = '/Users';
-
-const HedgehogContextProvider = ({ children }: any): ReactElement => {
+const HedgehogContextProvider = ({
+  children,
+}: {
+  children: ReactElement;
+}): ReactElement => {
   const [hedgehog, setHedgehog] = useState(null);
   const [signedIn, setSignedIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [hedgehogLoading, setLoading] = useState(false);
+  const [authorized, setAuthorized] = useState(false);
 
   const checkWalletStatus = () => {
     if (hedgehog?.isLoggedIn()) {
@@ -119,7 +140,6 @@ const HedgehogContextProvider = ({ children }: any): ReactElement => {
       setErrorMessage('');
       try {
         await hedgehog.signUp(username, password);
-        console.warn('after signup');
         checkWalletStatus();
       } catch (e) {
         console.error(e);
@@ -135,31 +155,29 @@ const HedgehogContextProvider = ({ children }: any): ReactElement => {
   };
 
   useEffect(() => {
-    // const firebase = new Firebase();
     const setAuthFn = async (obj) =>
       await makeRequestToService({
-        url: '/api/setAuth',
+        url: `authentications`,
         method: 'post',
-        data: {
-          table: AUTH_TABLE,
-          key: obj.lookupKey,
-          obj,
-        },
+        data: obj,
       });
 
     const setUserFn = async (obj) =>
       await makeRequestToService({
-        url: '/api/setUser',
+        url: `users`,
         method: 'post',
-        data: { obj, table: USER_TABLE, key: obj.username },
+        data: obj,
       });
 
-    const getFn = async (obj) =>
-      await makeRequestToService({
-        url: '/api/getItem',
-        method: 'post',
-        data: { obj, table: AUTH_TABLE },
+    const getFn = async (obj) => {
+      console.warn(obj);
+      return await makeRequestToService({
+        url: 'authentications',
+        method: 'get',
+        params: obj,
       });
+    };
+
     const _hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
     setHedgehog(_hedgehog);
   }, []);
@@ -168,6 +186,35 @@ const HedgehogContextProvider = ({ children }: any): ReactElement => {
     if (!hedgehog) return;
     checkWalletStatus();
   }, [hedgehog]);
+
+  const EssentialForwarderRead = new Contract(
+    EssentialForwarderContract.address,
+    EssentialForwarderContract.abi,
+    new JsonRpcProvider(process.env.RPC_URL),
+  );
+
+  const updateAuthorization = async (address: string) => {
+    console.warn('checcking auth');
+    EssentialForwarderRead.getSession(address)
+      .then((resp) => {
+        console.warn(resp);
+        const now = Date.now();
+        const timestamp = resp.expiresAt.mul(1000);
+
+        setAuthorized(
+          getAddress(resp.authorized) ===
+            getAddress(hedgehog.getWallet().getAddressString()) &&
+            timestamp.gt(now),
+        );
+      })
+      .catch((e) => {
+        console.warn(e);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const value = {
     hedgehog,
@@ -178,6 +225,8 @@ const HedgehogContextProvider = ({ children }: any): ReactElement => {
     handleLogin,
     handleSignUp,
     logout,
+    updateAuthorization,
+    authorized,
   };
 
   return (
