@@ -13,7 +13,7 @@
     "@0xessential/signers": "^0.0.1-beta-17",
     "@audius/hedgehog": "^1.0.12",
     "@metamask/eth-sig-util": "^4.0.1",
-    "@zoralabs/zdk": "^2.1.3",
+    "@zoralabs/zdk": "^2.1.6",
     "axios": "^0.26.0",
     "axios-case-converter": "^0.9.0",
     "bnc-notify": "^1.9.4",

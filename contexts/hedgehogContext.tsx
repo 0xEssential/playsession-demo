@@ -30,7 +30,7 @@ const client = applyCaseMiddleware(
   axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
-    headers: { 'API-KEY': 'YfilHxvyWffnQhAEf6Leng' },
+    headers: { 'API-KEY': process.env.API_KEY },
   }),
 );
 

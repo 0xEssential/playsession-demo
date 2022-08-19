@@ -19,10 +19,9 @@ const NFTLoader = ({ increment }: { increment: () => void }): ReactElement => {
     const fetch = async () => {
       const args = {
         where: {
-          // collectionAddresses: ['0x8d04a8c79cEB0889Bdd12acdF3Fa9D207eD3Ff63'],
           ownerAddresses: [address],
         },
-        // pagination: { limit: 30 }, // Optional, limits the response size to 3 NFTs
+        pagination: { limit: 50 }, // Optional, limits the response size to 3 NFTs
         includeFullDetails: false, // Optional, provides more data on the NFTs such as events
         includeSalesHistory: false, // Optional, provides sales data on the NFTs
       };
